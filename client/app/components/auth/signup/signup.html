@@ -1,0 +1,47 @@
+<section class="">
+    <h2 style="text-align: center">Sign Up</h2>
+    <div class="w3-container w3-white w3-row">
+        <div class="container">
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="firstName">First Name:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" ng-model="vm.credentials.firstName" id="firstName" placeholder="Enter first name" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="lastName">Last Name:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" ng-model="vm.credentials.lastName" id="lastName" placeholder="Enter first name" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="email">Email:</label>
+                    <div class="col-sm-10">
+                        <input type="email" class="form-control" ng-model="vm.credentials.email" id="email" placeholder="Enter email" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="username">Username:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" ng-model="vm.credentials.username" id="username" placeholder="Enter username" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="password">Password:</label>
+                    <div class="col-sm-10">
+                        <input type="password" class="form-control" ng-model="vm.credentials.password" id="password" placeholder="Enter password" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-default" ng-click="vm.signup(form.$valid);">Register</button>
+                    </div>
+                </div>
+                <div class="alert">
+                    {{vm.alert}}
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,12 @@
+<section>
+	<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+		<div class="row">
+			<h2>Event list</h2>
+			<ul class="list-group">
+				<div data-ng-repeat="event in vm.events">
+					<button type="button" class="btn btn-success" style="margin: 5px" data-ng-click="vm.edit(event)">{{event.name}}</button>
+				</div>
+			</ul>
+		</div>
+	</div>
+</section>

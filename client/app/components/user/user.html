@@ -1,0 +1,25 @@
+<section>
+	<h1>User Profile</h1>
+	<div class="profile-picture col-lg-3 col-md-3 col-sm-3 col-xs-12">
+		<div class="img_container row">
+			<img alt="" class="img-responsive text-center" ng-src="{{vm.userInfo.profileImageURL}}" style="border-radius: 10%;
+    border: 1px solid rgba(0,0,0,0.1);" />
+		</div>
+		<div class="row"><a ui-sref="index.settings.picture">Change picture profile</a> </div>
+		<div class="row"><a ui-sref="index.settings.profile">Edit profile</a> </div>
+	</div>
+	<div class="user-info col-lg-8 col-md-8 col-sm-8 col-xs-12 pull-right">
+		<div class="row">
+			<label>First Name: </label> {{vm.userInfo.firstName}}
+		</div>
+		<div class="row">
+			<label>Last Name: </label> {{vm.userInfo.lastName}}
+		</div>
+		<div class="row">
+			<label>Email: </label> {{vm.userInfo.email}}
+		</div>
+		<div class="row">
+			<label>Creation Date: </label> {{vm.userInfo.creationDate | date:'short'}}
+		</div>
+	</div>
+</section>

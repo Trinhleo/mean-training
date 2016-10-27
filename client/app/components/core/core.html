@@ -1,0 +1,31 @@
+<section>
+	<div class="header">
+		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 float-right">
+			<ul class="nav nav-pills">
+				<li role="presentation" ng-class="{ active: vm.isActive('/dashboard')}"><a ui-sref="index.dashboard">Home</a></li>
+				<li role="presentation" ng-class="{ active: vm.isActive('/events')}"><a ui-sref="index.events.query">Events</a></li>
+				<li role="presentation" ng-class="{ active: vm.isActive('/gallery')}"><a ui-sref="index.gallery.album">Gallery</a></li>
+				<li role="presentation" ng-class="{ active: vm.isActive('/chat')}"> <a ui-sref="index.chat">Chat</a></li>
+			</ul>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 pull-right">
+			<div ng-show="!$root.user">
+				<a ui-sref="signin">Sign In /</a>
+				<a ui-sref="signup">Sign Up</a>
+			</div>
+			<div ng-show="$root.user">
+				<img alt="" class="img-responsive text-center" style="height: 32px; width: 32px;border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.1);" ng-src="{{$root.userInfo.profileImageURL}}" />
+				<a ui-sref="index.user">{{$root.user}}</a>
+				<a ui-sref="signout">Sign out!</a>
+			</div>
+		</div>
+	</div>
+	<br/>
+	<div ui-view class="container-fluid" style="padding: 25px" ;></div>
+	<br/>
+	<!-- Footer -->
+	<!--<div class="page-footer">
+		<p class="text-center"><span class="glyphicon glyphicon-check"></span> MeetMe</p>
+	</div>-->
+</section>

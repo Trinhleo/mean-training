@@ -1,0 +1,19 @@
+<section>
+	<div class="header">
+		<!-- Header items are made active upon selection -->
+		<ul class="nav nav-pills pull-right">
+			<li ng-class="{ active: vm.isActive('/events')}"><a ui-sref="index.events.query">Find Events</a></li>
+			<li ng-class="{ active: vm.isActive('/events/add')}"><a ui-sref="index.events.add">Add event</a></li>
+			<li ng-class="{ active: vm.isActive('/events/myevents')}"><a ui-sref="index.myevents">My events</a></li>
+			<!--<li ng-class="{ active: vm.isActive('/events/myevents')}"><a ui-sref="index.events.myevents">Events</a></li>-->
+		</ul>
+
+		<!-- Header Title -->
+		<h3 class="text-muted">List events</h3>
+	</div>
+	<!-- Map and Side Panel -->
+	<div class="row content">
+		<div ui-view class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		</div>
+	</div>
+</section>

@@ -1,0 +1,20 @@
+<header class="header">
+	<div class="">
+		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+			<a ui-sref="index.chat">Chat</a>
+			<a ui-sref="index.gallery">Gallery</a>
+		</div>
+		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 float-right">
+			<div ng-show="!$root.user">
+				<a ui-sref="signin">Sign In /</a>
+				<a ui-sref="signup">Sign Up</a>
+			</div>
+			<div ng-show="$root.user">
+				<a ui-sref="index.user">{{$root.user}}</a>
+				<a ui-sref="signout">Sign out!</a>
+			</div>
+		</div>
+	</div>
+</header>
+<br>
+<div ui-view class="page-content app-content-body"></div>
