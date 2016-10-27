@@ -10,9 +10,14 @@
         // console.log(vm.event);
         vm.formData = {};
         vm.events = [];
+        vm.event = {};
+        vm.gotoEdit = gotoEdit
+        vm.isMyEvent = false;
         EventService.getEvent($stateParams.eventId).then(
             function (res) {
                 var evt = res;
+                vm.isMyEvent = $localStorage.userInfo._id && $localStorage.userInfo._id === evt.userHost._id ? true : false;
+                vm.event = evt;
                 vm.events.push(evt);
                 vm.formData = evt;
                 vm.formData.latitude = evt.location[1];
@@ -23,5 +28,9 @@
                 $state.go('index.dashboard');
             }
         );
+
+        function gotoEdit() {
+            $state.go()
+        }
     };
 })();

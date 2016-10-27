@@ -17,17 +17,16 @@
         vm.endDateOnSetTime = endDateOnSetTime
         vm.startDateBeforeRender = startDateBeforeRender
         vm.startDateOnSetTime = startDateOnSetTime
-        vm.drop = drop;
         // Set initial coordinates to the center of the US
         vm.formData.longitude = 10.350;
         vm.formData.latitude = 106.500;
-        // getEventsLocation();
+
+        getEventsLocation();
 
         function getEventsLocation() {
             EventService.loadMyEvents().then(
                 function (res) {
                     vm.events = res;
-                    drop();
                     console.log(res);
                 },
                 function (err) {
@@ -66,10 +65,6 @@
                 vm.formData.longitude = parseFloat($rootScope.clickLong).toFixed(3);
             });
         });
-
-        function drop() {
-            $rootScope.dropEventsMakers(vm.events);
-        };
 
         // Creates a new user based on the form fields
         function EditEvent() {

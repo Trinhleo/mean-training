@@ -181,7 +181,8 @@
             data._id = vm.eventId;
             data.imgUrl = response.imgUrl;
             EventService.editEvent(data).then(function (res) {
-                vm.success = "success"
+                vm.success = "success";
+                getEventsLocation();
             },
                 function (err) {
                     vm.error = "error"

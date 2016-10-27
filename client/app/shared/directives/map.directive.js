@@ -8,8 +8,7 @@
             template: '<div></div>',
             scope: {
                 events: '=events',
-                clickLat: '=clickLat',
-                clickLong: '=clickLong'
+                editable: '=editable'
             },
             replace: true,
             link: link
@@ -112,14 +111,14 @@
 
             function setMarker(events) {
                 clearMarkers();
-                for (var i in events) {
 
+                for (var i in events) {
 
                     addMarkerWithTimeout(events[i], i * 100, map);
                 };
             };
 
-            function addMarkerWithTimeout(event, timeout, map) {
+            function addMarkerWithTimeout(event, timeout, map, draggable) {
                 window.setTimeout(function () {
                     var position;
                     try {
@@ -133,8 +132,10 @@
                         origin: new google.maps.Point(0, 0), // origin
                         anchor: new google.maps.Point(0, 32),
                     };
+                    var draggable = scope.editable ? true : false;
                     var marker = new google.maps.Marker({
                         position: position,
+                        draggable: draggable,
                         map: map,
                         title: event.name,
                         animation: google.maps.Animation.DROP,
@@ -167,9 +168,16 @@
 
                     marker.addListener('click', function () {
                         infowindow.open(map, marker);
-                        // window.setTimeout(function () {
-                        //     // map.panTo(marker.getPosition());
-                        // }, 500);
+                        $rootScope.clickLat = marker.getPosition().lat();
+                        $rootScope.clickLong = marker.getPosition().lng();
+                        $rootScope.$broadcast("clicked");
+
+                    });
+                    marker.addListener('drag', function () {
+                        infowindow.open(map, marker);
+                        $rootScope.clickLat = marker.getPosition().lat();
+                        $rootScope.clickLong = marker.getPosition().lng();
+                        $rootScope.$broadcast("drag");
 
                     });
                     markers.push(marker);
