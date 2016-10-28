@@ -1,13 +1,12 @@
-(function(){
-    angular.module('app.auth.signout')
-    .config(Signout);
+(function () {
+    angular.module('app.signout')
+        .config(Signout);
 
-    function Signout($stateProvider){
+    function Signout($stateProvider) {
 
-     $stateProvider
+        $stateProvider
             .state('signout', {
                 url: '/signout',
-                redirectTo: 'index.dashboard',
                 controller: 'SignoutController',
                 controllerAs: 'vm'
             });

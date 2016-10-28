@@ -1,3 +1,6 @@
 #map_canvas {
-    height: 600px;
+  position: relative;
+};
+.no_padding {
+ padding: 0 ! important;
 }

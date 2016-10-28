@@ -1,5 +1,5 @@
 (function () {
-    angular.module('app.auth.signin')
+    angular.module('app.signin')
         .config(Signin);
 
     function Signin($stateProvider) {

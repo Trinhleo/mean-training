@@ -180,7 +180,7 @@
             var data = {};
             data._id = vm.eventId;
             data.imgUrl = response.imgUrl;
-            EventService.editEvent(data).then(function (res) {
+            EventService.updateEvent(data).then(function (res) {
                 vm.success = "success";
                 getEventsLocation();
             },

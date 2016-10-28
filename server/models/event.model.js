@@ -34,9 +34,6 @@ var EventSchema = new Schema({
         default: Date.now,
         require: true
     },
-    imgAlbum: [{
-        type: String
-    }],
     imgUrl: {
         type: String,
         default: 'http://localhost:3000/gallery/5808afb003609a0efcceb85d/1477563545213-trolltunga.jpg'

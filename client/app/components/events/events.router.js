@@ -4,37 +4,30 @@
     function EventsRoute($stateProvider) {
         $stateProvider
             .state('index.events', {
-                abstract: true,
-                url: "/events",
+                url: '/events',
                 templateUrl: 'app/components/events/events.html',
                 controller: 'EventsController',
-                controllerAs: 'vm',
-                redirectTo: 'index.events.query'
-            })
-            .state('index.events.query', {
-                url: "",
-                templateUrl: 'app/components/events/query-events.html',
-                controller: 'QueryEventsController',
                 controllerAs: 'vm'
             })
-            .state('index.events.add', {
-                url: "/add",
+            .state('index.add', {
+                url: "/events/add",
                 templateUrl: 'app/components/events/manage/add-event.html',
                 controller: 'AddEventController',
                 controllerAs: 'vm'
             })
-            .state('index.events.details', {
-                url: "/:eventId",
+            .state('index.details', {
+                url: '/events/:eventId',
                 templateUrl: 'app/components/events/event-details.html',
                 controller: 'EventDetailsController',
                 controllerAs: 'vm'
             })
-            .state('index.myevents', {
-                url: "/myevents",
-                templateUrl: 'app/components/events/manage/my-events.html',
-                controller: 'MyEventsController',
+            .state('index.edit', {
+                url: '/events/:eventId/edit',
+                templateUrl: 'app/components/events/manage/edit-event.html',
+                controller: 'EditEventController',
                 controllerAs: 'vm'
             });
+
 
         // getEvent.$inject = ['$state', '$stateParams', 'EventService'];
 

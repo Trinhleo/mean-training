@@ -1,27 +1,36 @@
 <section>
 	<div class="page-header col-md-12">
-
-	</div>
-	</div>
-	<!--<my-map id="map_canvas" events="vm.events" class="col-lg-6 col-md-6 col-sm-6 col-xs-12 "></my-map>-->
-	<div>
-			<!--<li ng-class="{ active: vm.isActive('/events')}"><a ui-sref="index.events.query">Find Events</a></li>
-			<li ng-class="{ active: vm.isActive('/events/add')}"><a ui-sref="index.events.add">Add event</a></li>-->
-			<button class="btn btn-primary" ng-click="vm.gotoAddEvent();">Add</button>
+		<div>
 			<button class="btn btn-primary" ng-show="vm.isMyEvent" ng-click="vm.gotoEdit();">Edit</button>
-	</div>
-	<div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">
-		{{vm.event}}
-		<h1>{{vm.event.name}}</h1>
+		</div>
 
 	</div>
-	<!--<div class="form-group text-center">
-			<img ng-src="{{vm.imageURL}}" alt="" class="img-thumbnail" style="max-height:200px; max-width: 200px">
+	</div>
+	<my-map id="map_canvas" events="vm.events" class="col-lg-6 col-md-6 col-sm-6 col-xs-12 "></my-map>
+	<div class="row">
+		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><img alt="" class="img-responsive text-center" ng-src="{{vm.event.imgUrl}}" style="max-height: 400px; max-width:400px;border-radius: 10%;
+    border: 1px solid rgba(0,0,0,0.1);" />
 		</div>
-		<div class="form-group">
-			<label for="eventImage">Event Image</label>
-			<span class="btn btn-default btn-file te">Choose an image<input type="file" nv-file-select uploader="vm.uploader"></span>
-		</div>-->
+		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+			<h1 class="title-lv1">Event information</h1>
+			<h2>{{vm.event.name}}</h2>
+			<label>Start Time: </label>
+			<strong>{{vm.event.startTime | date : 'medium' : '+070'}}</strong> <br>
+			<label>End Time: </label>
+			<strong>{{vm.event.endTime | date : 'medium' : '+070'}}</strong> <br>
+			<label>Address: </label>
+			<strong>{{vm.event.address}}</strong> <br>
+			<label>Desctiption: </label>
+			<span>{{vm.event.desctiption}}</span>
+		</div>
+	</div>
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+		<h1 class="title-lv1">Event images :</h1>
+		<div data-ng-repeat="eventImg in vm.eventImages">
+			<img alt="" class="img-responsive text-center" ng-src="{{eventImg.imgUrl}}" style="max-height: 200px;border-radius: 10%;
+    border: 1px solid rgba(0,0,0,0.1);" />
+		</div>
+	</div>
 	</form>
 	</div>
 </section>

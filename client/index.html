@@ -10,14 +10,15 @@
 	<link rel="stylesheet" href="app/components/core/core.css">
 	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
 	<link rel="stylesheet" href="node_modules/angular-bootstrap-datetimepicker/src/css/datetimepicker.css" />
+
 </head>
 
-<body>
-	<div ui-view>
-	</div>
+<body class="ng-cloak">
+	<section ui-view>
+	</section>
 </body>
 
-
+<!--<script async defer src="https://maps.googleapis.com/maps/api/js"></script>-->
 <script src="bower_components/angular/angular.min.js"></script>
 <script src="node_modules/moment/moment.js"></script>
 <script src="node_modules/angular-bootstrap-datetimepicker/src/js/datetimepicker.js"></script>
@@ -31,6 +32,7 @@
 <script src="bower_components/angular-animate/angular-animate.min.js"></script>
 <script src="bower_components/angularjs-geolocation/dist/angularjs-geolocation.min.js"></script>
 <script src="node_modules/socket.io-client/socket.io.js"></script>
+<script src="bower_components/ng-file-upload/ng-file-upload.min.js"></script>
 
 <script src="app/app.module.js"></script>
 <script src="app/app.config.js"></script>
@@ -43,9 +45,9 @@
 <script src="app/components/core/core.module.js"></script>
 <script src="app/components/core/core.router.js"></script>
 <script src="app/components/core/core.controller.js"></script>
-<script src="app/components/dashboard/dashboard.module.js"></script>
+<!--<script src="app/components/dashboard/dashboard.module.js"></script>
 <script src="app/components/dashboard/dashboard.router.js"></script>
-<script src="app/components/dashboard/dashboard.controller.js"></script>
+<script src="app/components/dashboard/dashboard.controller.js"></script>-->
 <script src="app/components/auth/signup/signup.module.js"></script>
 <script src="app/components/auth/signup/signup.router.js"></script>
 <script src="app/components/auth/signup/signup.controller.js"></script>
@@ -62,24 +64,23 @@
 <script src="app/components/user/settings/user-setting.router.js"></script>
 <script src="app/components/user/settings/user-setting.controller.js"></script>
 <script src="app/components/user/settings/change-profile-picture.controller.js"></script>
-<script src="app/components/gallery/gallery.module.js"></script>
+<!--<script src="app/components/gallery/gallery.module.js"></script>
 <script src="app/components/gallery/gallery.router.js"></script>
-<script src="app/components/gallery/gallery.controller.js"></script>
-<script src="app/components/gallery/upload-image.controller.js"></script>
-<script src="app/components/chat/chat.module.js"></script>
+<script src="app/components/gallery/gallery.controller.js"></script>-->
+<!--<script src="app/components/gallery/upload-image.controller.js"></script>-->
+<!--<script src="app/components/chat/chat.module.js"></script>
 <script src="app/components/chat/chat.router.js"></script>
-<script src="app/components/chat/chat.controller.js"></script>
+<script src="app/components/chat/chat.controller.js"></script>-->
 <script src="app/components/events/events.module.js"></script>
 <script src="app/components/events/events.router.js"></script>
 <script src="app/components/events/events.controller.js"></script>
-<script src="app/components/events/query-events.controller.js"></script>
+<!--<script src="app/components/events/query-events.controller.js"></script>-->
 <script src="app/components/events/event-details.controller.js"></script>
 <script src="app/components/events/manage/add-event.controller.js"></script>
 <script src="app/components/events/manage/edit-event.controller.js"></script>
-<script src="app/components/events/manage/upload-event-image.controller.js"></script>
-<script src="app/components/events/manage/my-events.controller.js"></script>
 <script src="app/shared/directives/map.directive.js"></script>
+<script src="app/shared/directives/upload.directive.js"></script>
 <!-- Google Maps API -->
-<script async defer src="https://maps.googleapis.com/maps/api/js"></script>
+
 
 </html>

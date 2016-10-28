@@ -10,6 +10,7 @@ const galleryPathUrl = '/gallery/';
 const maxImgFileSize = 1024 * 1024;
 module.exports = {
     getAllImages: getAllImages,
+    getAllImagesByEventId: getAllImagesByEventId,
     createImage: createImage,
     updateImage: updateImage,
     deleteImage: deleteImage
@@ -26,8 +27,19 @@ function getAllImages(req, res) {
     });
 };
 
+function getAllImagesByEventId(req, res) {
+    galleryDao.listAllImageByEventId(req.params.id, function (err, result) {
+        if (err) {
+            res.status(500).send('internal error!');
+        } else {
+            res.status(200).send(result);
+        }
+    });
+};
+
 function createImage(req, res) {
     console.log('im here');
+    var eventId = req.params.id;
     var id = req.decoded._id;
     var dir = galleryPath + id;
     var imgUrl = hostName + port + galleryPathUrl + id;
@@ -61,11 +73,13 @@ function createImage(req, res) {
                         message: 'error in uploading'
                     });
                 };
-
                 var image = {
                     user: id,
                     name: req.body.name,
                     imgUrl: imgUrl + "/" + req.file.filename
+                };
+                if (eventId) {
+                    image.event = eventId;
                 };
                 galleryDao.createImage(image, function (err, result) {
                     console.log(result);

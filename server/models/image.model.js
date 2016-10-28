@@ -6,6 +6,10 @@ var ImageSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'User'
     },
+    event: {
+        type: Schema.ObjectId,
+        ref: 'Event'
+    },
     name: {
         type: String,
         default: '',

@@ -8,29 +8,31 @@
             template: '<div></div>',
             scope: {
                 events: '=events',
-                editable: '=editable'
+                editable: '=editable',
+                myId: '=myid'
             },
             replace: true,
             link: link
         };
         // directive link function
         function link(scope, element, attrs) {
-            var isMapLoad = false;
             window.initialize = function () {
-                isMapLoad = true
+                $rootScope.isMapLoad = true;
+                initMap();
+            };
 
-            }
-            initMap();
-            // if (map === void 0 || google === void 0 || !isMapLoad) {
-            //     addMapScript();
-            // };
+            if (!$rootScope.isMapLoad) {
+                addMapScript();
+            } else {
+                initMap();
+            };
 
-            // function addMapScript() {
-            //     var script = document.createElement('script');
-            //     script.type = 'text/javascript';
-            //     script.src = "https://maps.googleapis.com/maps/api/js?callback=initialize"
-            //     document.body.appendChild(script);
-            // };
+            function addMapScript() {
+                var script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src = "https://maps.googleapis.com/maps/api/js?callback=initialize"
+                document.body.appendChild(script);
+            };
 
 
             var map, infoWindow;
@@ -42,6 +44,13 @@
                     setMarker(events);
                 });
             }, 1000);
+
+            $timeout(function () {
+                scope.$watch('myId', function (myevents) {
+                    console.log(myevents);
+                    // setMarker(events);
+                });
+            }, 500);
 
 
             scope.$watch('clickLat', function (events) {
@@ -59,7 +68,16 @@
                 if (map === void 0) {
                     var selectedLat = 10.8121052;
                     var selectedLong = 106.7120805;
+                    // var navHeight =  $('.nav').css('height');
+                    var height = window.innerHeight;
+                    window.addEventListener('load', function () {
+                        height = window.innerHeight;
+                    });
+
+                    $('#map_canvas').css({ height: height });
+
                     var mapCanvas = document.getElementById('map_canvas');
+
                     var mapOptions = {
                         center: new google.maps.LatLng(selectedLat, selectedLong),
                         zoom: 13,
@@ -130,7 +148,7 @@
                         url: event.imgUrl, // url
                         scaledSize: new google.maps.Size(200, 100), // scaled size
                         origin: new google.maps.Point(0, 0), // origin
-                        anchor: new google.maps.Point(0, 32),
+                        anchor: new google.maps.Point(0, 32)
                     };
                     var draggable = scope.editable ? true : false;
                     var marker = new google.maps.Marker({
@@ -141,6 +159,8 @@
                         animation: google.maps.Animation.DROP,
                         icon: icon
                     });
+
+                    var myEvent = scope.myId === event.userHost ? true : false;
                     var name = event.name;
                     // var startTime = $filter('date')(event.startTime, 'medium', '+07');
                     // var endTime = $filter('date')(event.endTime, 'medium', '+07');
@@ -148,25 +168,60 @@
                     var endTime = $filter('date')(event.endTime, 'medium', '+070')
                     var description = event.description;
                     var eventHostId = event.userHost;
-                    var link = '#/events/'.concat(event._id)
+                    var detailsLink = '#/events/' + event._id;
+                    var editLink = detailsLink.concat('/edit');
+                    // var uploadLink = detailsLink.concat('/upload');
                     var address = event.address
                     // var link = window.location('/gallery')
                     var contentString = ' <div><h3>' + name + '</h3><br>'
                         + '<h4>Start Time: <strong>' + startTime + '</strong></h4>'
                         + '<h4>End Time: <strong>' + endTime + '</strong></h4>'
                         + '<h4>Address: <strong>' + address + '</strong></h4>'
-                        + '<a href="' + link + '"><i>Event Details</i></a><br><br>'
+                        + '<a href="' + detailsLink + '"><button class="btn btn-info">Event Details</button></a><br><br>'
                         + '<img style="height:200px; width:400px" src="' + event.imgUrl + '" />'
                         + '</div>';
 
-                    if (infoWindow !== void 0) {
-                        infoWindow.close();
-                    }
-                    var infowindow = new google.maps.InfoWindow({
-                        content: contentString
+                    var rightClickInfoWidow = '<a href="' + detailsLink + '"><button class="btn btn-info">Event Details</button></a>'
+                        + '<a href="' + editLink + '"><button class="btn btn-warning">Edit Event</button></a>'
+                        // + '<a href="' + uploadLink + '"><button class="btn btn-success">Upload Event Image</button></a><br><br>'
+                        + '</div>';
+                    var infowindowRightClick = new google.maps.InfoWindow({
+                        content: rightClickInfoWidow
                     });
 
+                    if (infoWindow !== void 0) {
+                        infoWindow.close();
+                    };
+                    if (myEvent) {
+                        var contentStringMyEvent = ' <div><h3>' + name + '</h3><br>'
+                            + '<h4>Start Time: <strong>' + startTime + '</strong></h4>'
+                            + '<h4>End Time: <strong>' + endTime + '</strong></h4>'
+                            + '<h4>Address: <strong>' + address + '</strong></h4>'
+                            + '<a href="' + detailsLink + '"><button class="btn btn-info">Event Details</button></a>'
+                            + '<a href="' + editLink + '"><button class="btn btn-warning">Edit Event</button></a><br><br>'
+                            // + '<a href="' + uploadLink + '"><button class="btn btn-success">Upload Event Image</button></a><br><br>'
+                            + '<img style="height:200px; width:400px" src="' + event.imgUrl + '" />'
+                            + '</div>';
+
+                        var infowindow = new google.maps.InfoWindow({
+                            content: contentStringMyEvent
+                        });
+
+                        marker.addListener('rightclick', function () {
+
+
+                            infowindow.close();
+                            infowindowRightClick.open(map, marker);
+                            console.log('myevent');
+                        });
+                    } else {
+                        var infowindow = new google.maps.InfoWindow({
+                            content: contentString
+                        });
+                    };
+
                     marker.addListener('click', function () {
+                        infowindowRightClick.close();
                         infowindow.open(map, marker);
                         $rootScope.clickLat = marker.getPosition().lat();
                         $rootScope.clickLong = marker.getPosition().lng();

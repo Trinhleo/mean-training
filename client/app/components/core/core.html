@@ -1,31 +1,27 @@
-<section>
-	<div class="header">
-		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 float-right">
-			<ul class="nav nav-pills">
-				<li role="presentation" ng-class="{ active: vm.isActive('/dashboard')}"><a ui-sref="index.dashboard">Home</a></li>
-				<li role="presentation" ng-class="{ active: vm.isActive('/events')}"><a ui-sref="index.events.query">Events</a></li>
-				<li role="presentation" ng-class="{ active: vm.isActive('/gallery')}"><a ui-sref="index.gallery.album">Gallery</a></li>
-				<li role="presentation" ng-class="{ active: vm.isActive('/chat')}"> <a ui-sref="index.chat">Chat</a></li>
-			</ul>
+<header class="navbar navbar-default" style="width:100%">
+	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 float-right">
+		<ul class="nav nav-pills">
+			<li ng-class="{ active: vm.isActive('/')}"><a ui-sref="index.events">Home</a></li>
+			<!--<li ng-class="{ active: vm.isActive('/events')}"><a ui-sref="index.events">List Events</a></li>-->
+			<li ng-class="{ active: vm.isActive('/add')}"><a ui-sref="index.add">Add event</a></li>
+		</ul>
+	</div>
+	<div class="col-lg-3 col-md-3 col-sm-3 col-xs-6 pull-right">
+		<div ng-show="!$root.user" class="nav navbar-nav navbar-right">
+			<a ui-sref="signin">Sign In /</a>
+			<a ui-sref="signup">Sign Up</a>
 		</div>
-		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 pull-right">
-			<div ng-show="!$root.user">
-				<a ui-sref="signin">Sign In /</a>
-				<a ui-sref="signup">Sign Up</a>
-			</div>
-			<div ng-show="$root.user">
+		<div ng-show="$root.user" style="width:100%">
+			<div style="width:50%">
 				<img alt="" class="img-responsive text-center" style="height: 32px; width: 32px;border-radius: 50%;
     border: 1px solid rgba(0,0,0,0.1);" ng-src="{{$root.userInfo.profileImageURL}}" />
-				<a ui-sref="index.user">{{$root.user}}</a>
+			</div>
+			<div style="width:50%">
+				<a ui-sref="index.user"><strong>{{$root.user}} </strong></a>
 				<a ui-sref="signout">Sign out!</a>
 			</div>
 		</div>
-	</div>
-	<br/>
-	<div ui-view class="container-fluid" style="padding: 25px" ;></div>
-	<br/>
-	<!-- Footer -->
-	<!--<div class="page-footer">
-		<p class="text-center"><span class="glyphicon glyphicon-check"></span> MeetMe</p>
-	</div>-->
+</header>
+<section class="page-wrapper">
+	<div ui-view="" class="page-content app-content-body"></div>
 </section>

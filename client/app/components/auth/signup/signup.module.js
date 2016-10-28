@@ -1,4 +1,4 @@
 (function (){
-    angular.module('app.auth.signup',[]);
+    angular.module('app.signup',[]);
 }
 )();

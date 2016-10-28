@@ -1,5 +1,5 @@
 (function () {
-    angular.module('app.auth.signup')
+    angular.module('app.signup')
         .controller('SignupController', SignupController);
 
     SignupController.$inject = ['AuthService', '$state', '$timeout', '$rootScope', '$localStorage'];

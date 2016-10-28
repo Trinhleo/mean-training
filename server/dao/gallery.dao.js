@@ -5,14 +5,26 @@ var Image = mongoose.model('Image');
 var _ = require('lodash');
 module.exports = {
     listAllImageByUserId: listAllImageByUserId,
+    listAllImageByEventId: listAllImageByEventId,
     getImageById: getImageById,
     createImage: createImage,
     updateImage: updateImage,
     deleteImage: deleteImage
-}
+};
 
 function listAllImageByUserId(userId, callback) {
-    Image.find(userId).sort('-created').exec(function (err, images) {
+    Image.find({ user: userId }).sort('-created').exec(function (err, images) {
+        if (err) {
+            console.log(err);
+            callback(err, null);
+        } else {
+            callback(null, images);
+        }
+    })
+};
+
+function listAllImageByEventId(eventId, callback) {
+    Image.find({ event: eventId }).sort('-created').exec(function (err, images) {
         if (err) {
             console.log(err);
             callback(err, null);
@@ -88,7 +100,7 @@ function deleteImage(id, callback) {
             console.log('1' + err);
             callback(err, null);
         } else if (null === image) {
-            callback(null,null);
+            callback(null, null);
         } else {
             image.remove(function (err, result) {
                 if (err) {

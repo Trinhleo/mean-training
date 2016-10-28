@@ -1,5 +1,5 @@
 (function () {
-    angular.module('app.auth.signout')
+    angular.module('app.signout')
         .controller('SignoutController', SignoutController);
 
     SignoutController.$inject = ['$rootScope', '$state', '$localStorage', 'AuthService'];
@@ -10,7 +10,7 @@
             delete $localStorage.user;
             delete $localStorage.token;
             delete $localStorage.userInfo;
-            $state.go('index.dashboard');
+            $state.go('signin');
         }, function (err) {
             $rootScope.alert = err.data.message;
         });

@@ -4,19 +4,20 @@
 
     EventService.$inject = ['$http', '$q', 'appConfigs']
     function EventService($http, $q, appConfigs) {
-        var apiUrl = appConfigs.baseApiUrl + "events/";
+        var apiUrl = appConfigs.baseApiUrl + "events";
         return {
             loadEvents: loadEvents,
             loadMyEvents: loadMyEvents,
             getEvent: getEvent,
             createEvent: createEvent,
-            editEvent: editEvent,
-            deleteEvent: deleteEvent
+            updateEvent: updateEvent,
+            deleteEvent: deleteEvent,
+            getEventImages: getEventImages
         };
 
         function loadMyEvents() {
             var deferred = $q.defer();
-            $http.get(apiUrl+'myevents').then(function (res) {
+            $http.get(apiUrl + '/myevents').then(function (res) {
                 deferred.resolve(res.data);
             }, function (err) {
                 deferred.reject(err);
@@ -33,9 +34,10 @@
             });
             return deferred.promise;
         };
+
         function getEvent(id) {
             var deferred = $q.defer();
-            $http.get(apiUrl + id).then(function (res) {
+            $http.get(apiUrl + '/' + id).then(function (res) {
                 deferred.resolve(res.data);
             }, function (err) {
                 deferred.reject(err);
@@ -53,10 +55,10 @@
             return deferred.promise;
         };
 
-        function editEvent(data) {
+        function updateEvent(data) {
             var id = data._id;
             var deferred = $q.defer();
-            $http.put(apiUrl + id, data).then(function (res) {
+            $http.put(apiUrl + '/' + id, data).then(function (res) {
                 deferred.resolve(res.data);
             }, function (err) {
                 deferred.reject(err);
@@ -66,12 +68,32 @@
 
         function deleteEvent(id) {
             var deferred = $q.defer();
-            $http.delete(apiUrl + id).then(function (res) {
+            $http.delete(apiUrl + '/' + id).then(function (res) {
                 deferred.resolve(res.data);
             }, function (err) {
                 deferred.reject(err);
             });
             return deferred.promise;
         };
+
+        function getEventImages(id) {
+            var deferred = $q.defer();
+            $http.get(apiUrl + '/' + id + '/images').then(function (res) {
+                deferred.resolve(res.data);
+            }, function (err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        };
+
+        // function uploadEventImages(id) {
+        //     var deferred = $q.defer();
+        //     $http.get(apiUrl + id + '/images').then(function (res) {
+        //         deferred.resolve(res.data);
+        //     }, function (err) {
+        //         deferred.reject(err);
+        //     });
+        //     return deferred.promise;
+        // };
     };
 })();

@@ -1,5 +1,5 @@
 (function () {
-    angular.module('app.auth.signin')
+    angular.module('app.signin')
         .controller('SigninController', SigninController);
 
     SigninController.$inject = ['AuthService', '$localStorage', '$state', '$rootScope'];
@@ -19,7 +19,7 @@
                 $localStorage.token = res.access_token;
                 $localStorage.user = res.name;
                 $localStorage.userInfo = res.userInfo;
-                $state.go('index.dashboard');
+                $state.go('index.events');
             }, function (err) {
                 console.log(err)
                 vm.alert = err.data.message || err.message;

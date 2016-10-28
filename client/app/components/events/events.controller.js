@@ -2,64 +2,40 @@
     angular.module('app.events')
         .controller('EventsController', EventsController);
 
-    EventsController.$inject = ['$state', '$localStorage', '$rootScope', '$location', '$timeout', '$filter'];
+    EventsController.$inject = ['$scope', '$state', '$localStorage', '$rootScope', 'EventService', 'geolocation', '$timeout'];
 
-    function EventsController($state, $localStorage, $rootScope, $location, $timeout, $filter) {
+    function EventsController($scope, $state, $localStorage, $rootScope, EventService, geolocation, $timeout) {
         var vm = this;
-        var markers = [];
-        var marker;
-        vm.isActive = isActive;
-        // getMap();
-        // $rootScope.dropEventsMakers = drop;
+        // var queryBody = {};
+        vm.events = [];
+        vm.myEvents = false;
+        vm.myId = $localStorage.userInfo._id;
+        vm.getEventsLocation = getEventsLocation;
+        vm.formData = {};
+        getEventsLocation();
 
-        function isActive(viewLocation) {
-            return viewLocation === $location.path();
+        function getEventsLocation(myEvents) {
+            vm.myEvents = myEvents
+            if (myEvents) {
+                EventService.loadMyEvents().then(
+                    function (res) {
+                        vm.events = res;
+                        console.log(res);
+                    },
+                    function (err) {
+                        console.log(err)
+                        vm.alert = err;
+                    });
+            } else {
+                EventService.loadEvents().then(
+                    function (res) {
+                        vm.events = res;
+                    },
+                    function (err) {
+                        console.log(err)
+                        vm.alert = err;
+                    });
+            };
         };
-        // function getMap() {
-        //     MapService.init().then(function () {
-        //     });
-        // };
-
-
-        // function initMap() {
-        //     var selectedLat = 10.8121052;
-        //     var selectedLong = 106.7120805;
-        //     map = new google.maps.Map(document.getElementById('map'), {
-        //         zoom: 13,
-        //         center: { lat: selectedLat, lng: selectedLong }
-        //     });
-        //     var lastMarker;
-        //     google.maps.event.addListener(map, 'click', function (e) {
-        //         var marker = new google.maps.Marker({
-        //             position: e.latLng,
-        //             draggable: true,
-        //             animation: google.maps.Animation.BOUNCE,
-        //             map: map
-        //         });
-
-        //         // When a new spot is selected, delete the old red bouncing marker
-        //         if (lastMarker) {
-        //             lastMarker.setMap(null);
-        //         }
-
-        //         // Create a new red bouncing marker and move to it
-        //         lastMarker = marker;
-
-        //         // Update Broadcasted Variable (lets the panels know to change their lat, long values)
-        //         $rootScope.clickLat = marker.getPosition().lat();
-        //         $rootScope.clickLong = marker.getPosition().lng();
-        //         $rootScope.$broadcast("clicked");
-        //         window.setTimeout(function () {
-        //             map.panTo(marker.getPosition());
-        //         }, 500);
-        //         marker.addListener('drag', function () {
-        //             $rootScope.clickLat = marker.getPosition().lat();
-        //             $rootScope.clickLong = marker.getPosition().lng();
-        //             $rootScope.$broadcast("drag");
-        //         })
-        //     });
-        // };
-        
-
     };
 })();
