@@ -19,7 +19,7 @@ module.exports = {
 
 function getAllEvents(req, res) {
     var id = req.decoded._id;
-    eventDao.listAllEvents(id, function (err, result) {
+    eventDao.listAllEvents(function (err, result) {
         if (err) {
             res.status(500).send('internal error!');
         } else {

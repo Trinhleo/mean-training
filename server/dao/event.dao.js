@@ -12,9 +12,9 @@ module.exports = {
     deleteEvent: deleteEvent
 }
 
-function listAllEvents(userId, callback) {
-    
-    Event.find({ endTime: { $gt: new Date } }).sort('-created').exec(function (err, events) {
+function listAllEvents(callback) {
+
+    Event.find({ endTime: { $gt: new Date } }).sort('-created').populate('userHost', 'firstName lastName profileImageURL').exec(function (err, events) {
         if (err) {
             console.log(err);
             callback(err, null);
@@ -71,7 +71,7 @@ function updateEvent(id, eventInfo, callback) {
             callback(err, null);
         } else {
             var info = _.assignIn(result, eventInfo)
-             console.log(info);
+            console.log(info);
             info.save(function (err, result) {
                 if (err) {
                     console.log(err);

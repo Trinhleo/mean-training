@@ -9,7 +9,8 @@
             scope: {
                 events: '=events',
                 editable: '=editable',
-                myId: '=myId'
+                myId: '=myId',
+                add: '=add'
             },
             replace: true,
             link: link
@@ -94,33 +95,35 @@
                     map = new google.maps.Map(mapCanvas, mapOptions);
 
                     google.maps.event.addListener(map, 'click', function (e) {
-                        var marker = new google.maps.Marker({
-                            position: e.latLng,
-                            draggable: true,
-                            animation: google.maps.Animation.BOUNCE,
-                            map: map
-                        });
+                        if (scope.add || scope.editable) {
+                            var marker = new google.maps.Marker({
+                                position: e.latLng,
+                                draggable: true,
+                                animation: google.maps.Animation.BOUNCE,
+                                map: map
+                            });
 
-                        // When a new spot is selected, delete the old red bouncing marker
-                        if (lastMarker) {
-                            lastMarker.setMap(null);
-                        }
+                            // When a new spot is selected, delete the old red bouncing marker
+                            if (lastMarker) {
+                                lastMarker.setMap(null);
+                            }
 
-                        // Create a new red bouncing marker and move to it
-                        lastMarker = marker;
+                            // Create a new red bouncing marker and move to it
+                            lastMarker = marker;
 
-                        // Update Broadcasted Variable (lets the panels know to change their lat, long values)
-                        $rootScope.clickLat = marker.getPosition().lat();
-                        $rootScope.clickLong = marker.getPosition().lng();
-                        $rootScope.$broadcast("clicked");
-                        window.setTimeout(function () {
-                            map.panTo(marker.getPosition());
-                        }, 500);
-                        marker.addListener('drag', function () {
+                            // Update Broadcasted Variable (lets the panels know to change their lat, long values)
                             $rootScope.clickLat = marker.getPosition().lat();
                             $rootScope.clickLong = marker.getPosition().lng();
-                            $rootScope.$broadcast("drag");
-                        })
+                            $rootScope.$broadcast("clicked");
+                            window.setTimeout(function () {
+                                map.panTo(marker.getPosition());
+                            }, 500);
+                            marker.addListener('drag', function () {
+                                $rootScope.clickLat = marker.getPosition().lat();
+                                $rootScope.clickLong = marker.getPosition().lng();
+                                $rootScope.$broadcast("drag");
+                            })
+                        };
                     });
 
 
@@ -250,17 +253,100 @@
                 clearMarkers();
 
                 events.forEach(function (evt) {
-                    var newLatlng = new google.maps.LatLng(evt.location[1], evt.location[0]);
+                    var position
+                    try {
+                        position = new google.maps.LatLng(evt.location[1], evt.location[0]);
+                    } catch (e) {
+                        position = new google.maps.LatLng(event.latitude, event.longitude);
+                    };
+                    // var newLatlng = new google.maps.LatLng(evt.location[1], evt.location[0]);
                     image = evt.imgUrl;
                     name = evt.name;
-
+                    var lastOverlay;
+                    var lastIW;
                     var overlay = new customMarker(
-                        newLatlng,
+                        position,
                         map,
                         {
                             img: image,
                             name: name
                         });
+                    var startTime = $filter('date')(evt.startTime, 'medium', '+070');
+                    var endTime = $filter('date')(evt.endTime, 'medium', '+070')
+                    var description = evt.description;
+                    var eventHostId = evt.userHost;
+                    // var hostProfileLink = '#/'
+                    var detailsLink = '#/events/' + evt._id;
+                    var editLink = detailsLink.concat('/edit');
+                    // var uploadLink = detailsLink.concat('/upload');
+                    var address = evt.address
+                    // var link = window.location('/gallery')
+                    var contentString = '<div id="iw-container"><div class="iw-title"> <a style="color:#f5f5f5" href="' + detailsLink + '">' + name + '</a></div>'
+                        + '<div class="iw-content">'
+                        + '<h4>Hosted by: <img style="height:36px; width:36px; border-radius:50%" src="' + evt.userHost.profileImageURL + '" /> <strong style ="color: #000099">' + evt.userHost.firstName + ' ' + evt.userHost.lastName + '</strong></h4>'
+                        + '<h4>Start Time: <strong style="color: red">' + startTime + '</strong></h4>'
+                        + '<h4>End Time: <strong style="color: red">' + endTime + '</strong></h4>'
+                        + '<h4>Address: <strong>' + address + '</strong></h4>'
+                        // + '<a href="' + detailsLink + '"><button class="btn btn-info">Event Details</button></a><br><br>'
+                        // + '<img style="height:200px; width:400px" src="' + evt.imgUrl + '" />'
+                        + '</div>'
+                        + '<div class="iw-bottom-gradient"></div>'
+                        + '</div>';
+
+                    var infowindow = new google.maps.InfoWindow({
+                        content: contentString,
+                        maxWidth :400
+                    });
+
+                    google.maps.event.addListener(infowindow, 'domready', function () {
+
+                        // Reference to the DIV that wraps the bottom of infowindow
+                        var iwOuter = $('.gm-style-iw');
+
+                        /* Since this div is in a position prior to .gm-div style-iw.
+                         * We use jQuery and create a iwBackground variable,
+                         * and took advantage of the existing reference .gm-style-iw for the previous div with .prev().
+                        */
+                        var iwBackground = iwOuter.prev();
+
+                        // Removes background shadow DIV
+                        iwBackground.children(':nth-child(2)').css({ 'display': 'none' });
+
+                        // Removes white background DIV
+                        iwBackground.children(':nth-child(4)').css({ 'display': 'none' });
+
+                        // Moves the infowindow 115px to the right.
+                        iwOuter.parent().parent().css({ left: '115px' });
+
+                        // Moves the shadow of the arrow 76px to the left margin.
+                        iwBackground.children(':nth-child(1)').attr('style', function (i, s) { return s + 'left: 76px !important;' });
+
+                        // Moves the arrow 76px to the left margin.
+                        iwBackground.children(':nth-child(3)').attr('style', function (i, s) { return s + 'left: 76px !important;' });
+
+                        // Changes the desired tail shadow color.
+                        iwBackground.children(':nth-child(3)').find('div').children().css({ 'box-shadow': 'rgba(72, 181, 233, 0.6) 0px 1px 6px', 'z-index': '1' });
+
+                        // Reference to the div that groups the close button elements.
+                        var iwCloseBtn = iwOuter.next();
+
+                        // Apply the desired effect to the close button
+                        iwCloseBtn.css({ opacity: '1', right: '38px', top: '3px', border: '7px solid #48b5e9', 'border-radius': '13px', 'box-shadow': '0 0 5px #3990B9' });
+
+                        // If the content of infowindow not exceed the set maximum height, then the gradient is removed.
+                        if ($('.iw-content').height() < 140) {
+                            $('.iw-bottom-gradient').css({ display: 'none' });
+                        }
+
+                        // The API automatically applies 0.7 opacity to the button after the mouseout event. This function reverses this event to the desired value.
+                        iwCloseBtn.mouseout(function () {
+                            $(this).css({ opacity: '1' });
+                        });
+                    });
+
+                    overlay.addListener('click', function () {
+                        infowindow.open(map, overlay);
+                    });
                     // addMarkerWithTimeout(evt, 100, map);
                     markers.push(overlay);
                 });
@@ -274,124 +360,124 @@
                 // };
             };
 
-            function addMarkerWithTimeout(event, timeout, map, draggable) {
-                window.setTimeout(function () {
-                    var position;
-                    try {
-                        position = new google.maps.LatLng(event.location[1], event.location[0]);
-                    } catch (e) {
-                        position = new google.maps.LatLng(event.latitude, event.longitude);
-                    };
-                    var icon = {
-                        url: event.imgUrl, // url
-                        scaledSize: new google.maps.Size(200, 100), // scaled size
-                        origin: new google.maps.Point(0, 0), // origin
-                        anchor: new google.maps.Point(0, 32)
-                    };
-                    var draggable = scope.editable ? true : false;
+            // function addMarkerWithTimeout(event, timeout, map, draggable) {
+            //     window.setTimeout(function () {
+            //         var position;
+            //         try {
+            //             position = new google.maps.LatLng(event.location[1], event.location[0]);
+            //         } catch (e) {
+            //             position = new google.maps.LatLng(event.latitude, event.longitude);
+            //         };
+            //         var icon = {
+            //             url: event.imgUrl, // url
+            //             scaledSize: new google.maps.Size(200, 100), // scaled size
+            //             origin: new google.maps.Point(0, 0), // origin
+            //             anchor: new google.maps.Point(0, 32)
+            //         };
+            //         var draggable = scope.editable ? true : false;
 
-                    var marker = new google.maps.Marker({
-                        position: position,
-                        draggable: draggable,
-                        map: map,
-                        title: event.name,
-                        animation: google.maps.Animation.DROP,
-                        icon: icon
-                    });
+            //         var marker = new google.maps.Marker({
+            //             position: position,
+            //             draggable: draggable,
+            //             map: map,
+            //             title: event.name,
+            //             animation: google.maps.Animation.DROP,
+            //             icon: icon
+            //         });
 
-                    var myEvent = scope.myId === event.userHost ? true : false;
-                    var name = event.name;
-                    // var startTime = $filter('date')(event.startTime, 'medium', '+07');
-                    // var endTime = $filter('date')(event.endTime, 'medium', '+07');
-                    var startTime = $filter('date')(event.startTime, 'medium', '+070');
-                    var endTime = $filter('date')(event.endTime, 'medium', '+070')
-                    var description = event.description;
-                    var eventHostId = event.userHost;
-                    var detailsLink = '#/events/' + event._id;
-                    var editLink = detailsLink.concat('/edit');
-                    // var uploadLink = detailsLink.concat('/upload');
-                    var address = event.address
-                    // var link = window.location('/gallery')
-                    var contentString = ' <div><h3>' + name + '</h3><br>'
-                        + '<h4>Start Time: <strong>' + startTime + '</strong></h4>'
-                        + '<h4>End Time: <strong>' + endTime + '</strong></h4>'
-                        + '<h4>Address: <strong>' + address + '</strong></h4>'
-                        + '<a href="' + detailsLink + '"><button class="btn btn-info">Event Details</button></a><br><br>'
-                        + '<img style="height:200px; width:400px" src="' + event.imgUrl + '" />'
-                        + '</div>';
+            //         var myEvent = scope.myId === event.userHost ? true : false;
+            //         var name = event.name;
+            //         // var startTime = $filter('date')(event.startTime, 'medium', '+07');
+            //         // var endTime = $filter('date')(event.endTime, 'medium', '+07');
+            //         var startTime = $filter('date')(event.startTime, 'medium', '+070');
+            //         var endTime = $filter('date')(event.endTime, 'medium', '+070')
+            //         var description = event.description;
+            //         var eventHostId = event.userHost;
+            //         var detailsLink = '#/events/' + event._id;
+            //         var editLink = detailsLink.concat('/edit');
+            //         // var uploadLink = detailsLink.concat('/upload');
+            //         var address = event.address
+            //         // var link = window.location('/gallery')
+            //         var contentString = ' <div><h3>' + name + '</h3><br>'
+            //             + '<h4>Start Time: <strong>' + startTime + '</strong></h4>'
+            //             + '<h4>End Time: <strong>' + endTime + '</strong></h4>'
+            //             + '<h4>Address: <strong>' + address + '</strong></h4>'
+            //             + '<a href="' + detailsLink + '"><button class="btn btn-info">Event Details</button></a><br><br>'
+            //             + '<img style="height:200px; width:400px" src="' + event.imgUrl + '" />'
+            //             + '</div>';
 
-                    var rightClickInfoWidow = '<a href="' + detailsLink + '"><button class="btn btn-info">Event Details</button></a>'
-                        + '<a href="' + editLink + '"><button class="btn btn-warning">Edit Event</button></a>'
-                        // + '<a href="' + uploadLink + '"><button class="btn btn-success">Upload Event Image</button></a><br><br>'
-                        + '</div>';
-                    var infowindowRightClick = new google.maps.InfoWindow({
-                        content: rightClickInfoWidow
-                    });
+            //         var rightClickInfoWidow = '<a href="' + detailsLink + '"><button class="btn btn-info">Event Details</button></a>'
+            //             + '<a href="' + editLink + '"><button class="btn btn-warning">Edit Event</button></a>'
+            //             // + '<a href="' + uploadLink + '"><button class="btn btn-success">Upload Event Image</button></a><br><br>'
+            //             + '</div>';
+            //         var infowindowRightClick = new google.maps.InfoWindow({
+            //             content: rightClickInfoWidow
+            //         });
 
-                    if (infoWindow !== void 0) {
-                        infoWindow.close();
-                    };
-                    if (myEvent) {
-                        var contentStringMyEvent = ' <div><h3>' + name + '</h3><br>'
-                            + '<h4>Start Time: <strong>' + startTime + '</strong></h4>'
-                            + '<h4>End Time: <strong>' + endTime + '</strong></h4>'
-                            + '<h4>Address: <strong>' + address + '</strong></h4>'
-                            + '<a href="' + detailsLink + '"><button class="btn btn-info">Event Details</button></a>'
-                            + '<a href="' + editLink + '"><button class="btn btn-warning">Edit Event</button></a><br><br>'
-                            // + '<a href="' + uploadLink + '"><button class="btn btn-success">Upload Event Image</button></a><br><br>'
-                            + '<img style="height:200px; width:400px" src="' + event.imgUrl + '" />'
-                            + '</div>';
+            //         if (infoWindow !== void 0) {
+            //             infoWindow.close();
+            //         };
+            //         if (myEvent) {
+            //             var contentStringMyEvent = ' <div><h3>' + name + '</h3><br>'
+            //                 + '<h4>Start Time: <strong>' + startTime + '</strong></h4>'
+            //                 + '<h4>End Time: <strong>' + endTime + '</strong></h4>'
+            //                 + '<h4>Address: <strong>' + address + '</strong></h4>'
+            //                 + '<a href="' + detailsLink + '"><button class="btn btn-info">Event Details</button></a>'
+            //                 + '<a href="' + editLink + '"><button class="btn btn-warning">Edit Event</button></a><br><br>'
+            //                 // + '<a href="' + uploadLink + '"><button class="btn btn-success">Upload Event Image</button></a><br><br>'
+            //                 + '<img style="height:200px; width:400px" src="' + event.imgUrl + '" />'
+            //                 + '</div>';
 
-                        var infowindow = new google.maps.InfoWindow({
-                            content: contentStringMyEvent
-                        });
+            //             var infowindow = new google.maps.InfoWindow({
+            //                 content: contentStringMyEvent
+            //             });
 
-                        marker.addListener('rightclick', function () {
+            //             marker.addListener('rightclick', function () {
 
 
-                            infowindow.close();
-                            infowindowRightClick.open(map, marker);
-                            console.log('myevent');
-                        });
-                    } else {
-                        var infowindow = new google.maps.InfoWindow({
-                            content: contentString
-                        });
-                    };
+            //                 infowindow.close();
+            //                 infowindowRightClick.open(map, marker);
+            //                 console.log('myevent');
+            //             });
+            //         } else {
+            //             var infowindow = new google.maps.InfoWindow({
+            //                 content: contentString
+            //             });
+            //         };
 
-                    marker.addListener('click', function () {
-                        infowindowRightClick.close();
-                        infowindow.open(map, marker);
-                        $rootScope.clickLat = marker.getPosition().lat();
-                        $rootScope.clickLong = marker.getPosition().lng();
-                        $rootScope.$broadcast("clicked");
+            //         marker.addListener('click', function () {
+            //             infowindowRightClick.close();
+            //             infowindow.open(map, marker);
+            //             $rootScope.clickLat = marker.getPosition().lat();
+            //             $rootScope.clickLong = marker.getPosition().lng();
+            //             $rootScope.$broadcast("clicked");
 
-                    });
-                    marker.addListener('drag', function () {
-                        infowindow.open(map, marker);
-                        $rootScope.clickLat = marker.getPosition().lat();
-                        $rootScope.clickLong = marker.getPosition().lng();
-                        $rootScope.$broadcast("drag");
+            //         });
+            //         marker.addListener('drag', function () {
+            //             infowindow.open(map, marker);
+            //             $rootScope.clickLat = marker.getPosition().lat();
+            //             $rootScope.clickLong = marker.getPosition().lng();
+            //             $rootScope.$broadcast("drag");
 
-                    });
+            //         });
 
-                    // var newLatlng = new google.maps.LatLng(marker.Lat, marker.Lng);
-                    // // image = marker.url.imgUrl;
-                    // name = marker.title;
+            //         // var newLatlng = new google.maps.LatLng(marker.Lat, marker.Lng);
+            //         // // image = marker.url.imgUrl;
+            //         // name = marker.title;
 
-                    // var overlay = new customMarker(
-                    //     newLatlng,
-                    //     map,
-                    //     {
-                    //         img: icon.url,
-                    //         name: name,
-                    //         marker_id: '123',
-                    //         colour: 'Red'
-                    //     });
+            //         // var overlay = new customMarker(
+            //         //     newLatlng,
+            //         //     map,
+            //         //     {
+            //         //         img: icon.url,
+            //         //         name: name,
+            //         //         marker_id: '123',
+            //         //         colour: 'Red'
+            //         //     });
 
-                    markers.push(marker);
-                }, timeout);
-            }
+            //         markers.push(marker);
+            //     }, timeout);
+            // }
 
             function clearMarkers() {
                 for (var i = 0; i < markers.length; i++) {
