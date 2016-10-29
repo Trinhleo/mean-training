@@ -1,7 +1,7 @@
 (function () {
     angular.module('app.signin')
         .config(Signin);
-
+    Signin.$inject = ['$stateProvider'];
     function Signin($stateProvider) {
         $stateProvider
             .state('signin', {

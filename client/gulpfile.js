@@ -20,6 +20,7 @@ gulp.task('index', function () {
         srcBower = gulp.src(bowerFiles(), {read: false}),
         srcCss = gulp.src(['./app/**/*.css'], {read: false}),
         srcAngular = gulp.src(['./app/**/*.js']).pipe(angularFilesort());
+        
 
     return target.pipe(inject(srcBower, {name: 'bower', relative: true}))
         .pipe(inject(srcCss, {relative: true}))

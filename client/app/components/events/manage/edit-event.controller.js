@@ -7,6 +7,7 @@
     function EditEventController($state, $localStorage, $rootScope, $scope, EventService, $stateParams, FileUploader, appConfigs, $window, $timeout) {
         var vm = this;
         // Initializes Variables
+        vm.url = appConfigs.baseApiUrl + 'gallery/images';
         vm.counter = 0;
         vm.events = [];
         vm.eventImages

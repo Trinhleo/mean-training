@@ -4,7 +4,7 @@
     Map.$inject = ['$rootScope', '$filter', '$timeout']
     function Map($rootScope, $filter, $timeout) {
         return {
-            restrict: 'EA',
+            restrict: 'E',
             template: '<div></div>',
             scope: {
                 events: '=events',
@@ -35,8 +35,14 @@
             };
 
 
-            var map, infoWindow;
+            var map, infoWindow, overlay;
             var markers = [];
+
+            function customMarker(latlng, map, args) {
+                this.latlng = latlng;
+                this.args = args;
+                this.setMap(map);
+            }
 
             $timeout(function () {
                 scope.$watch('events', function (events) {
@@ -64,6 +70,7 @@
 
             // init the map
             function initMap() {
+                //custom Marker
                 // map config
                 if (map === void 0) {
                     var selectedLat = 10.8121052;
@@ -115,6 +122,118 @@
                             $rootScope.$broadcast("drag");
                         })
                     });
+
+
+
+                    customMarker.prototype = new google.maps.OverlayView();
+
+                    customMarker.prototype.draw = function () {
+                        var self = this;
+                        var div = this.div;
+
+                        if (!div) {
+
+                            div = this.div = document.createElement('div');
+                            div.id = 'marker';
+                            div.style.width = '100px';
+                            div.style.height = '100px';;
+
+                            var div_pointer = document.createElement('div');
+                            div_pointer.className = 'triangle';
+
+                            var image_container = document.createElement('div');
+                            image_container.className = 'image_container';
+
+                            var img = document.createElement('img');
+                            img.className = "marker_image";
+                            img.src = self.args.img;
+
+                            var name_container = document.createElement('div');
+                            name_container.className = 'name_container';
+
+                            var text = document.createElement('p');
+                            text.innerText = self.args.name;
+                            text.className = 'text';
+
+                            var exit = document.createElement('div');
+                            exit.className = 'exit';
+                            exit.innerHTML = '<img className="exit_image" style="width:30px; height:30px;" src="https://cdn3.iconfinder.com/data/icons/security-1/512/delete-512.png">' + '</img>';
+                            exit.style.display = 'none';
+
+
+                            function large() {
+                                div.classList.add('large');
+                                div.style.width = '300px';
+                                div.style.height = '300px';
+                                div.style.zIndex = '1000';
+
+                                exit.style.display = 'block';
+                                exit.style.opacity = '1';
+                                exit.addEventListener('mouseover', function () {
+                                    exit.style.opacity = '1';
+                                }, false);
+                                exit.addEventListener('mouseout', function () {
+                                    exit.style.opacity = '0.3';
+                                }, false);
+
+                            }
+
+                            function close(e) {
+                                var target = e.target;
+                                e.stopPropagation();
+                                div.classList.remove('large');
+                                div.style.width = '100px';
+                                div.style.height = '100px';
+
+                                exit.style.display = 'none';
+                            }
+
+                            div.appendChild(image_container);
+                            image_container.appendChild(img);
+                            div.appendChild(div_pointer);
+                            div.appendChild(name_container);
+                            name_container.appendChild(text);
+                            div.appendChild(exit);
+
+                            name_container.onmouseover = function () { name_container.style.opacity = '0.6'; div.style.zIndex = '1000' };
+                            name_container.onmouseout = function () { name_container.style.opacity = '0'; div.style.zIndex = '100' };
+                            div.addEventListener('click', large, false);
+                            exit.addEventListener('click', close, false);
+
+                            if (typeof (self.args.marker_id) !== 'undefined') {
+                                div.dataset.marker_id = self.args.marker_id;
+                            }
+
+                            google.maps.event.addDomListener(div, "click", function (event) {
+                                google.maps.event.trigger(self, "click");
+                            });
+
+                            var panes = this.getPanes();
+
+                            panes.overlayImage.appendChild(div);
+
+                        }
+
+                        var point = this.getProjection().fromLatLngToDivPixel(this.latlng);
+
+                        if (point) {
+                            div.style.left = (point.x - 50) + 'px';
+                            div.style.top = (point.y - 125) + 'px';
+                        }
+                    }
+
+                    customMarker.prototype.remove = function () {
+
+                        if (this.div) {
+                            this.div.parentNode.removeChild(this.div);
+                            this.div = null;
+                        }
+
+                    }
+
+                    customMarker.prototype.getPosition = function () {
+                        return this.latlng;
+                    }
                 };
             };
 
@@ -132,7 +251,10 @@
 
                 for (var i in events) {
 
-                    addMarkerWithTimeout(events[i], i * 100, map);
+                    
+
+                    // addMarkerWithTimeout(events[i], i * 100, map);
+
                 };
             };
 
@@ -151,6 +273,7 @@
                         anchor: new google.maps.Point(0, 32)
                     };
                     var draggable = scope.editable ? true : false;
+
                     var marker = new google.maps.Marker({
                         position: position,
                         draggable: draggable,
@@ -235,6 +358,21 @@
                         $rootScope.$broadcast("drag");
 
                     });
+
+                    // var newLatlng = new google.maps.LatLng(marker.Lat, marker.Lng);
+                    // // image = marker.url.imgUrl;
+                    // name = marker.title;
+
+                    // var overlay = new customMarker(
+                    //     newLatlng,
+                    //     map,
+                    //     {
+                    //         img: icon.url,
+                    //         name: name,
+                    //         marker_id: '123',
+                    //         colour: 'Red'
+                    //     });
+
                     markers.push(marker);
                 }, timeout);
             }

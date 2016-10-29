@@ -23,8 +23,7 @@
             }, function (err) {
                 console.log(err)
                 vm.alert = err.data.message || err.message;
-            })
-        }
-
-    }
+            });
+        };
+    };
 })();
