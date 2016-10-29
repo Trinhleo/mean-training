@@ -257,7 +257,7 @@
                     try {
                         position = new google.maps.LatLng(evt.location[1], evt.location[0]);
                     } catch (e) {
-                        position = new google.maps.LatLng(event.latitude, event.longitude);
+                        position = new google.maps.LatLng(evt.latitude, evt.longitude);
                     };
                     // var newLatlng = new google.maps.LatLng(evt.location[1], evt.location[0]);
                     image = evt.imgUrl;
@@ -283,19 +283,23 @@
                     // var link = window.location('/gallery')
                     var contentString = '<div id="iw-container"><div class="iw-title"> <a style="color:#f5f5f5" href="' + detailsLink + '">' + name + '</a></div>'
                         + '<div class="iw-content">'
-                        + '<h4>Hosted by: <img style="height:36px; width:36px; border-radius:50%" src="' + evt.userHost.profileImageURL + '" /> <strong style ="color: #000099">' + evt.userHost.firstName + ' ' + evt.userHost.lastName + '</strong></h4>'
-                        + '<h4>Start Time: <strong style="color: red">' + startTime + '</strong></h4>'
-                        + '<h4>End Time: <strong style="color: red">' + endTime + '</strong></h4>'
-                        + '<h4>Address: <strong>' + address + '</strong></h4>'
+                        + '</strong></h5>'
+                        + '<h5>Start Time: <strong style="color: red">' + startTime + '</strong></h5>'
+                        + '<h5>End Time: <strong style="color: red">' + endTime + '</strong></h5>'
+                        + '<h5>Address: <strong>' + address + '</strong></h5>'
                         // + '<a href="' + detailsLink + '"><button class="btn btn-info">Event Details</button></a><br><br>'
                         // + '<img style="height:200px; width:400px" src="' + evt.imgUrl + '" />'
+                        + '<hr>'
+                        + '<h5>Hosted by: <img style="height:36px; width:36px; border-radius:50%" src="' + evt.userHost.profileImageURL + '" /> <strong style ="color: #000099">' + evt.userHost.firstName + ' ' + evt.userHost.lastName
                         + '</div>'
+                        + '</strong></h5>'
                         + '<div class="iw-bottom-gradient"></div>'
                         + '</div>';
 
                     var infowindow = new google.maps.InfoWindow({
                         content: contentString,
-                        maxWidth :400
+                        maxWidth: 400,
+                        maxHeight: 400
                     });
 
                     google.maps.event.addListener(infowindow, 'domready', function () {

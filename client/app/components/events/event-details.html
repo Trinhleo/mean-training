@@ -1,36 +1,41 @@
 <section>
-	<div class="page-header col-md-12">
-		<div>
-			<button class="btn btn-primary" ng-show="vm.isMyEvent" ng-click="vm.gotoEdit();">Edit</button>
-		</div>
+	<div class=" col-md-12">
+		<button class="btn btn-primary" ng-show="vm.isMyEvent" ng-click="vm.gotoEdit();">Edit</button>
+		<hr>
+	</div>
 
-	</div>
-	</div>
-	<my-map id="map_canvas" events="vm.events" class="col-lg-6 col-md-6 col-sm-6 col-xs-12 "></my-map>
-	<div class="row">
-		<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12"><img alt="" class="img-responsive text-center" ng-src="{{vm.event.imgUrl}}" style="max-height: 400px; max-width:400px;border-radius: 10%;
-    border: 1px solid rgba(0,0,0,0.1);" />
-		</div>
-		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-			<h1 class="title-lv1">Event information</h1>
-			<h2>{{vm.event.name}}</h2>
-			<label>Start Time: </label>
-			<strong>{{vm.event.startTime | date : 'medium' : '+070'}}</strong> <br>
-			<label>End Time: </label>
-			<strong>{{vm.event.endTime | date : 'medium' : '+070'}}</strong> <br>
-			<label>Address: </label>
-			<strong>{{vm.event.address}}</strong> <br>
-			<label>Desctiption: </label>
-			<span>{{vm.event.desctiption}}</span>
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+		<my-map id="map_canvas" events="vm.events" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding"></my-map>
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<chat room="vm.room"></chat>
 		</div>
 	</div>
-	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-		<h1 class="title-lv1">Event images :</h1>
-		<div data-ng-repeat="eventImg in vm.eventImages">
-			<img alt="" class="img-responsive text-center" ng-src="{{eventImg.imgUrl}}" style="max-height: 200px;border-radius: 10%;
-    border: 1px solid rgba(0,0,0,0.1);" />
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 ">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+			<div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 "><img alt="" class="img-responsive text-center" ng-src="{{vm.event.imgUrl}}" style="height: 200px;width:200px; border-radius: 50%;
+    border: 5px solid rgba(0,0,0,0.1);" />
+			</div>
+			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+				<h1 class="title-lv1">Event information</h1>
+				<hr>
+				<h2>{{vm.event.name}}</h2>
+				<label>Start Time: </label>
+				<strong>{{vm.event.startTime | date : 'medium' : '+070'}}</strong> <br>
+				<label>End Time: </label>
+				<strong>{{vm.event.endTime | date : 'medium' : '+070'}}</strong> <br>
+				<label>Address: </label>
+				<strong>{{vm.event.address}}</strong> <br>
+				<label>Desctiption: </label>
+				<span>{{vm.event.desctiption}}</span>
+			</div>
 		</div>
-	</div>
-	</form>
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+			<h1 class="title-lv1">Event images </h1>
+			<hr>
+			<div data-ng-repeat="eventImg in vm.eventImages">
+				<img alt="" class="img-responsive text-center" ng-src="{{eventImg.imgUrl}}" style="max-height: 200px;max-width:300px;
+    border: 5px solid rgba(1,0,0,0.1);" />
+			</div>
+		</div>
 	</div>
 </section>

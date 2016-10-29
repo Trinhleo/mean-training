@@ -29,7 +29,7 @@ function listAllEvents(callback) {
 };
 
 function listAllEventsByUserId(userId, callback) {
-    Event.find({ userHost: userId }).sort('-created').exec(function (err, Events) {
+    Event.find({ userHost: userId }).populate('userHost', 'firstName lastName profileImageURL').sort('-created').exec(function (err, Events) {
         if (err) {
             console.log(err);
             callback(err, null);

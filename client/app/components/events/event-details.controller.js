@@ -8,6 +8,15 @@
         var vm = this;
         // // vm.event = EventResolve;
         // console.log(vm.event);
+        vm.room = {
+            _id: '5814e3df64761b190480c542',
+            name: 'abc',
+            roomHost: '58121624c82e2e00d872f00d',
+            __v: 0,
+            creationDate: '2016 - 10 - 29T18: 01:03.913Z',
+            listUserAttend: [],
+            listBannedUser: []
+        }
         vm.eventImages = [];
         vm.events = [];
         vm.event = {};
