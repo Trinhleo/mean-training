@@ -9,7 +9,7 @@
             scope: {
                 events: '=events',
                 editable: '=editable',
-                myId: '=myid'
+                myId: '=myId'
             },
             replace: true,
             link: link
@@ -53,19 +53,19 @@
 
             $timeout(function () {
                 scope.$watch('myId', function (myevents) {
-                    console.log(myevents);
+                    // console.log(myevents);
                     // setMarker(events);
                 });
             }, 500);
 
 
-            scope.$watch('clickLat', function (events) {
-                console.log(events);
-            });
+            // scope.$watch('clickLat', function (events) {
+            //     console.log(events);
+            // });
 
-            scope.$watch('clickLong', function (events) {
-                console.log(events);
-            });
+            // scope.$watch('clickLong', function (events) {
+            //     console.log(events);
+            // });
 
 
             // init the map
@@ -249,13 +249,29 @@
             function setMarker(events) {
                 clearMarkers();
 
-                for (var i in events) {
+                events.forEach(function (evt) {
+                    var newLatlng = new google.maps.LatLng(evt.location[1], evt.location[0]);
+                    image = evt.imgUrl;
+                    name = evt.name;
 
-                    
+                    var overlay = new customMarker(
+                        newLatlng,
+                        map,
+                        {
+                            img: image,
+                            name: name
+                        });
+                    // addMarkerWithTimeout(evt, 100, map);
+                    markers.push(overlay);
+                });
 
-                    // addMarkerWithTimeout(events[i], i * 100, map);
+                // for (var i in events) {
 
-                };
+
+
+                //     // addMarkerWithTimeout(events[i], i * 100, map);
+
+                // };
             };
 
             function addMarkerWithTimeout(event, timeout, map, draggable) {
