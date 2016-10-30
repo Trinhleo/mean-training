@@ -1,7 +1,7 @@
 'use strict';
 var mongoose = require('mongoose');
 require('../models/event.model.js');
-var Event = mongoose.model('Event');
+var Event = mongoose.model('FavoriteEvent');
 var _ = require('lodash');
 module.exports = {
     listAllEvents: listAllEvents,
@@ -100,7 +100,7 @@ function deleteEvent(id, callback) {
                     callback(err, null);
                 } else {
                     callback(null, true);
-                }
+                };
             });
         }
     })

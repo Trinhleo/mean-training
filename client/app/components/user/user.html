@@ -1,25 +1,46 @@
+<style>
+	.middle {
+		display: table-cell;
+		vertical-align: middle;
+	}
+	
+	;
+</style>
 <section>
-	<h1>User Profile</h1>
-	<div class="profile-picture col-lg-3 col-md-3 col-sm-3 col-xs-12">
-		<div class="img_container row">
-			<img alt="" class="img-responsive text-center" ng-src="{{vm.userInfo.profileImageURL}}" style="border-radius: 10%;
-    border: 1px solid rgba(0,0,0,0.1);" />
+	<h1 class="title-lv1">User Profile</h1>
+
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" style="padding-left:0; padding-right:0">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+			<div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 "><img alt="" class="img-responsive text-center" ng-src="{{vm.userInfo.profileImageURL}}" style="height: 200px;width:200px; border-radius: 5%;
+    border: 5px solid #337ab7;" /><br>
+				<button class="col-md-offset-2 btn btn-primary" ui-sref="index.settings.profile" ng-show="vm.isMe">Change Avatar</button> </div>
+			<h4>User's information</h4>
+			<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 middle">
+				<label>First Name: </label><span> {{vm.userInfo.firstName}} </span><br>
+				<label>Last Name: </label><span> {{vm.userInfo.lastName}}</span><br>
+				<label>Email: </label><span> {{vm.userInfo.email}}</span><br>
+				<label>Creation Date: </label><span> {{vm.userInfo.creationDate | date:'short'}}</span>
+			</div>
+
 		</div>
-		<div class="row"><a ui-sref="index.settings.picture">Change picture profile</a> </div>
-		<div class="row"><a ui-sref="index.settings.profile">Edit profile</a> </div>
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+			<slider images="vm.images"></slider>
+		</div>
 	</div>
-	<div class="user-info col-lg-8 col-md-8 col-sm-8 col-xs-12 pull-right">
-		<div class="row">
-			<label>First Name: </label> {{vm.userInfo.firstName}}
-		</div>
-		<div class="row">
-			<label>Last Name: </label> {{vm.userInfo.lastName}}
-		</div>
-		<div class="row">
-			<label>Email: </label> {{vm.userInfo.email}}
-		</div>
-		<div class="row">
-			<label>Creation Date: </label> {{vm.userInfo.creationDate | date:'short'}}
-		</div>
+	<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+		<h4>Events hosted</h4>
+		<ul class="list-group" ng-repeat="event in vm.events">
+			<li class="list-group-item">
+				<a href="#events/{{event._id}}" style="display: inline-block">
+					<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+						<img alt="" class="img-responsive text-center" ng-src="{{event.imgUrl}}" style="height: 100px;width:100px; border-radius: 50%;
+    border: 2px solid #337ab7;" />
+					</div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+						<strong>{{event.name}}</strong>
+					</div>
+				</a>
+			</li>
+		</ul>
 	</div>
 </section>

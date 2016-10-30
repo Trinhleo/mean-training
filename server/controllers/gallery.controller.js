@@ -11,6 +11,7 @@ const maxImgFileSize = 1024 * 1024;
 module.exports = {
     getAllImages: getAllImages,
     getAllImagesByEventId: getAllImagesByEventId,
+    getAllImagesByUserId: getAllImagesByUserId,
     createImage: createImage,
     updateImage: updateImage,
     deleteImage: deleteImage
@@ -36,6 +37,18 @@ function getAllImagesByEventId(req, res) {
         }
     });
 };
+
+function getAllImagesByUserId(req, res) {
+    var id = req.params.id;
+    galleryDao.listAllImageByUserId(id, function (err, result) {
+        if (err) {
+            res.status(500).send('internal error!');
+        } else {
+            res.status(200).send(result);
+        }
+    });
+};
+
 
 function createImage(req, res) {
     console.log('im here');

@@ -10,6 +10,7 @@ const galleryPathUrl = '/events/';
 const maxImgFileSize = 1024 * 1024;
 module.exports = {
     getAllEvents: getAllEvents,
+    getAllEventsByUserId: getAllEventsByUserId,
     getEventById: getEventById,
     getAllEventsOfUser: getAllEventsOfUser,
     createEvent: createEvent,
@@ -20,6 +21,17 @@ module.exports = {
 function getAllEvents(req, res) {
     var id = req.decoded._id;
     eventDao.listAllEvents(function (err, result) {
+        if (err) {
+            res.status(500).send('internal error!');
+        } else {
+            res.status(200).send(result);
+        }
+    });
+};
+
+function getAllEventsByUserId(req, res) {
+    var id = req.params.id;
+    eventDao.listAllEventsByUserId(id, function (err, result) {
         if (err) {
             res.status(500).send('internal error!');
         } else {

@@ -1,6 +1,6 @@
 'use strict';
 var mongoose = require('mongoose');
-require('../models/chatRoom.model.js');
+require('../models/chat-room.model.js');
 var Room = mongoose.model('ChatRoom');
 var _ = require('lodash');
 module.exports = {

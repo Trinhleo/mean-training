@@ -222,7 +222,7 @@ function sendMessage(io, socket, data) {
     var msg = {
         room: socket.room,
         message: data,
-        user: socket.user._id
+        user: socket.user._id,
     }
     //save message to db
     messageDao.createMessage(msg, callback);
@@ -230,6 +230,7 @@ function sendMessage(io, socket, data) {
         if (err) {
             return console.log(err);
         };
+        console.log(result);
     }
 
     io.sockets.in(socket.room).emit('chat message', {
@@ -238,7 +239,8 @@ function sendMessage(io, socket, data) {
             id: socket.user._id,
             nickname: socket.user.nickname,
             avatar: socket.user.profileImageURL
-        }
+        },
+        time: new Date()
     });
 };
 

@@ -9,8 +9,13 @@
 .avatar-and-button {
   padding-top: 8px;
   display: flex;
-}
+};
 
 .avatar-and-button div {
   margin-left: 15px
-}
+};
+
+.middle {
+    display: table-cell;
+    vertical-align: middle;
+};

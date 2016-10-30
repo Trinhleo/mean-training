@@ -1,8 +1,8 @@
 (function () {
     angular.module('app')
         .directive('chat', Chat);
-    Chat.$inject = ['$localStorage', '$rootScope', '$timeout']
-    function Chat($localStorage, $rootScope, $timeout) {
+    Chat.$inject = ['$localStorage', '$rootScope', '$timeout', '$filter']
+    function Chat($localStorage, $rootScope, $timeout, $filter) {
         return {
             restrict: 'E',
             templateUrl: './app/shared/directives/chat.directive.html',
@@ -12,7 +12,7 @@
             }
         }
 
-        function linkFn(scope) {
+        function linkFn(scope, element) {
             var socket = io.connect('http://localhost:3000');
             scope.roomName = "Please choose a room chat!"
             scope.alert = "";
@@ -43,7 +43,7 @@
 
             $timeout(function () {
                 joinRoom(scope.room);
-            }, 1000);
+            }, 500);
 
 
             socket.on('alert', function (msg) {
@@ -66,7 +66,7 @@
             // trigger receive message
             socket.on('chat message', function (msg) {
                 // var lastIndex = msg.length - 1;
-                scope.displayMessage(msg.user, msg.message);
+                scope.displayMessage(msg.user, msg.message, msg.time);
             });
 
             // trigger receive message
@@ -114,10 +114,11 @@
                 for (var x in msg) {
                     var userDisplay = {
                         nickname: msg[x].user.firstName.concat(msg[x].user.lastName),
-                        avatar: msg[x].user.profileImageURL
+                        avatar: msg[x].user.profileImageURL,
+                        id: msg[x].user._id
                     }
                     scope.counterLineOfMessage++;
-                    scope.displayMessage(userDisplay, msg[x].message);
+                    scope.displayMessage(userDisplay, msg[x].message, msg[x].creationDate);
                 };
 
             });
@@ -125,7 +126,7 @@
 
             function sendMessage(msg) {
                 if (msg === "") {
-                    $('#m').focus();
+                    $('#btn-input').focus();
                     return;
                 }
                 scope.counterLineOfMessage++;
@@ -136,22 +137,13 @@
             // key listener
             $(function () {
 
-                $('#m').keypress(function (e) {
+                $('#btn-input').keypress(function (e) {
                     if (e.which == 13) {
                         $(this).blur();
-                        $('#send').focus().click();
-                        $('#m').focus();
+                        $('#btn-chat').focus().click();
+                        $('#btn-input').focus();
                     }
                 });
-
-                $('#roomName').keypress(function (e) {
-                    if (e.which == 13) {
-                        $(this).blur();
-                        $('#submitRoom').focus().click();
-                        $('#roomName').focus();
-                    }
-                });
-
             });
 
             // join a room chat
@@ -178,28 +170,86 @@
                 scope.enableChat = false;
                 scope.currentRoom = 0;
                 scope.online = [];
-                scope.roomName = "Please choose a room chat!";
-                $('.messages').children().remove();
-                scope.counterLineOfMessage = 0;
+                // $('.messages').children().remove();
+                // scope.counterLineOfMessage = 0;
 
             };
             // display message on message window
-            function displayMessage(user, msg) {
-                if (scope.counterLineOfMessage > 5) {
-                    $('.messages').children().first().remove();
-                    scope.counterLineOfMessage--;
-                }
+            function displayMessage(user, msg, time) {
+                // if (scope.counterLineOfMessage > 5) {
+                //     $('.messages').children().first().remove();
+                //     scope.counterLineOfMessage--;
+                // }
                 var avatar = user.avatar || "";
                 console.log(avatar);
                 var nickname = user.nickname;
                 // var linkProfile = '#'
-                var message = msg;
-                var display = '<li class="list-group-item">'
-                    + '<img alt="" class="img-responsive text-center" style="height: 32px; width: 32px;border-radius: 50%;border: 1px solid rgba(0,0,0,0.1);" src="'
-                    + avatar + '"/><span> ' + nickname + '</span>: ' + message + '</li>';
-
-                $('.messages').append($(display));
+                var msgTime = $filter('date')(time, 'short') || ""
+                var display;
+                if (user.id && (user.id.toString() === $localStorage.userInfo._id.toString())) {
+                    display = '<div class="row msg_container base_sent">'
+                        + '<div class="col-md-10 col-xs-10">'
+                        + '<div class="messages msg_sent">'
+                        + '<p>' + msg + '</p>'
+                        + '<time datetime="">Me • ' + msgTime + '</time ></div > '
+                        + '</div>'
+                        + '<div class="col-md-2 col-xs-2 avatar">'
+                        + '<img src="' + avatar + '" class="img-responsive">'
+                        + '</div>'
+                        + ' </div>';
+                } else {
+                    display = '<div class="row msg_container base_receive">'
+                        + '<div class="col-md-2 col-xs-2 avatar">'
+                        + '<img src="' + avatar + '" class="img-responsive">'
+                        + '</div>'
+                        + '<div class="col-md-10 col-xs-10">'
+                        + '<div class="messages msg_receive">'
+                        + '<p>' + msg + '</p>'
+                        + '<time>' + nickname + ' • ' + msgTime + '</time></div>'
+                        + '</div>'
+                        + ' </div>';
+                };
+                $('.msg_container_base').append($(display));
+                var msgContainer = $('.msg_container_base');
+                msgContainer.animate({
+                    scrollTop: msgContainer[0].scrollHeight
+                }, 500);
             };
+
+
+            // //chat box settings
+            $(document).on('click', '.panel-heading span.icon_minim', function (e) {
+                var $this = $(this);
+                if (!$this.hasClass('panel-collapsed')) {
+                    $this.parents('.panel').find('.panel-body').slideUp();
+                    $this.addClass('panel-collapsed');
+                    $this.removeClass('glyphicon-minus').addClass('glyphicon-plus');
+                } else {
+                    $this.parents('.panel').find('.panel-body').slideDown();
+                    $this.removeClass('panel-collapsed');
+                    $this.removeClass('glyphicon-plus').addClass('glyphicon-minus');
+                }
+            });
+
+            $(document).on('focus', '.panel-footer input.chat_input', function (e) {
+                var $this = $(this);
+                if ($('#minim_chat_window').hasClass('panel-collapsed')) {
+                    $this.parents('.panel').find('.panel-body').slideDown();
+                    $('#minim_chat_window').removeClass('panel-collapsed');
+                    $('#minim_chat_window').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+                }
+            });
+            $(document).on('click', '#new_chat', function (e) {
+                var size = $(".chat-window:last-child").css("margin-left");
+                size_total = parseInt(size) + 400;
+                alert(size_total);
+                var clone = $("#chat_window_1").clone().appendTo(".container");
+                clone.css("margin-left", size_total);
+            });
+            $(document).on('click', '.icon_close', function (e) {
+                //$(this).parent().parent().parent().parent().remove();
+                $("#chat_window_1").remove();
+            });
         };
     };
 })();

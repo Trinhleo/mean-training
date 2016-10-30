@@ -12,7 +12,8 @@
             createEvent: createEvent,
             updateEvent: updateEvent,
             deleteEvent: deleteEvent,
-            getEventImages: getEventImages
+            getEventImages: getEventImages,
+            followEvent: followEvent
         };
 
         function loadMyEvents() {
@@ -84,6 +85,12 @@
                 deferred.reject(err);
             });
             return deferred.promise;
+        };
+
+        function followEvent(id) {
+            var defferred = $q.defer();
+
+
         };
 
         // function uploadEventImages(id) {

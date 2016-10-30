@@ -49,14 +49,19 @@
                 scope.$watch('events', function (events) {
                     console.log(events);
                     setMarker(events);
-                });
+                }, true);
             }, 1000);
+
+            // scope.$watch('events', function (events) {
+            //     console.log(events);
+            //     setMarker(events);
+            // }, true);
 
             $timeout(function () {
                 scope.$watch('myId', function (myevents) {
                     // console.log(myevents);
                     // setMarker(events);
-                });
+                }, true);
             }, 500);
 
 
@@ -275,7 +280,7 @@
                     var endTime = $filter('date')(evt.endTime, 'medium', '+070')
                     var description = evt.description;
                     var eventHostId = evt.userHost;
-                    // var hostProfileLink = '#/'
+                    var hostProfileLink = '#/users/' + evt.userHost._id;
                     var detailsLink = '#/events/' + evt._id;
                     var editLink = detailsLink.concat('/edit');
                     // var uploadLink = detailsLink.concat('/upload');
@@ -290,8 +295,8 @@
                         // + '<a href="' + detailsLink + '"><button class="btn btn-info">Event Details</button></a><br><br>'
                         // + '<img style="height:200px; width:400px" src="' + evt.imgUrl + '" />'
                         + '<hr>'
-                        + '<h5>Hosted by: <img style="height:36px; width:36px; border-radius:50%" src="' + evt.userHost.profileImageURL + '" /> <strong style ="color: #000099">' + evt.userHost.firstName + ' ' + evt.userHost.lastName
-                        + '</div>'
+                        + '<h5>Hosted by:<a href="' + hostProfileLink + '"> <img style="height:36px; width:36px; border-radius:50%" src="' + evt.userHost.profileImageURL + '" /> <strong style ="color: #000099">' + evt.userHost.firstName + ' ' + evt.userHost.lastName
+                        + '</a></div>'
                         + '</strong></h5>'
                         + '<div class="iw-bottom-gradient"></div>'
                         + '</div>';

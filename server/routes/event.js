@@ -9,6 +9,7 @@ module.exports = function () {
     router.get('/', authMiddleware.authentication, eventController.getAllEvents);
     router.get('/myevents', authMiddleware.authentication, eventController.getAllEventsOfUser);
     router.get('/:id', authMiddleware.authentication, eventController.getEventById);
+    router.get('/images', authMiddleware.authentication, galleryController.getAllImages);
     router.get('/:id/images', authMiddleware.authentication, galleryController.getAllImagesByEventId);
     router.post('/:id/images', authMiddleware.authentication, galleryController.createImage);
     router.put('/:id', authMiddleware.authentication, eventController.updateEvent);

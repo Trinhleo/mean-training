@@ -9,6 +9,7 @@
         return {
             createImage: createImage,
             getImages: getImages,
+            getImagesByUserId: getImagesByUserId,
             getOneImage: getOneImage,
             updateImage: updateImage,
             deleteImage: deleteImage
@@ -22,6 +23,17 @@
             var deferred = $q.defer();
 
             $http.get(apiUrl + '/images').then(function (res) {
+                deferred.resolve(res.data);
+            }, function (err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        };
+
+        function getImagesByUserId(userId) {
+            var deferred = $q.defer();
+
+            $http.get(apiUrl + '/' + userId + '/images').then(function (res) {
                 deferred.resolve(res.data);
             }, function (err) {
                 deferred.reject(err);

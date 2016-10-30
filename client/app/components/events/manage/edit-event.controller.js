@@ -10,7 +10,7 @@
         vm.url = appConfigs.baseApiUrl + 'gallery/images';
         vm.counter = 0;
         vm.events = [];
-        vm.eventImages
+        vm.eventImages = []
         vm.formData = {};
         vm.endDateBeforeRender = endDateBeforeRender;
         vm.endDateOnSetTime = endDateOnSetTime;

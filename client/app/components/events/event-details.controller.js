@@ -12,7 +12,8 @@
         vm.eventImages = [];
         vm.events = [];
         vm.event = {};
-        vm.gotoEdit = gotoEdit
+        vm.gotoEdit = gotoEdit;
+        vm.followEvent = followEvent;
         vm.isMyEvent = false;
         EventService.getEvent($stateParams.eventId).then(
             function (res) {
@@ -41,6 +42,10 @@
             $state.go('index.edit', {
                 eventId: vm.event._id
             });
+        };
+        
+        function followEvent() {
+            
         }
     };
 })();
