@@ -10,6 +10,10 @@
         var vm = this;
         $rootScope.user = $localStorage.user;
         $rootScope.userInfo = $localStorage.userInfo;
+        var socket = io.connect('http://localhost:3000');
+        socket.on('connect', function () {
+            socket.emit('authenticate', { token: $localStorage.token });
+        });
         // $('.page-wraper').css('height', window.innnerHeight - 50);
     }
 })();

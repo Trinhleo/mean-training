@@ -18,25 +18,25 @@
         vm.startDateOnSetTime = startDateOnSetTime;
         vm.updateEvent = updateEvent;
         vm.eventId = $stateParams.eventId;
-        vm.uploader = new FileUploader({
-            url: appConfigs.baseApiUrl + 'events/' + vm.eventId + '/images',
-            headers: {
-                authorization: $localStorage.token
-            },
-            alias: 'myfile'
-        });
-        vm.uploader.filters.push({
-            name: 'imageFilter',
-            fn: function (item, options) {
-                var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
-                return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
-            }
-        });
-        vm.uploader.onAfterAddingFile = onAfterAddingFile;
-        vm.uploader.onSuccessItem = onSuccessItem;
-        vm.uploader.onErrorItem = onErrorItem;
-        vm.uploadEventImage = uploadEventImage;
-        vm.cancelUpload = cancelUpload;
+        // vm.uploader = new FileUploader({
+        //     url: appConfigs.baseApiUrl + 'events/' + vm.eventId + '/images',
+        //     headers: {
+        //         authorization: $localStorage.token
+        //     },
+        //     alias: 'myfile'
+        // });
+        // vm.uploader.filters.push({
+        //     name: 'imageFilter',
+        //     fn: function (item, options) {
+        //         var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
+        //         return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
+        //     }
+        // });
+        // vm.uploader.onAfterAddingFile = onAfterAddingFile;
+        // vm.uploader.onSuccessItem = onSuccessItem;
+        // vm.uploader.onErrorItem = onErrorItem;
+        // vm.uploadEventImage = uploadEventImage;
+        // vm.cancelUpload = cancelUpload;
         vm.resetForm = getEventsLocation;
         // vm.formChangeDisable = formChangeDisable;
         // vm.resetChangeDisable = resetChangeDisable;
@@ -131,10 +131,11 @@
         });
 
         function updateEvent() {
+            vm.formData.location = [vm.formData.longitude, vm.formData.latitude]
             EventService.updateEvent(vm.formData)
                 .then(function (res) {
                     console.log(res);
-
+                    getEventsLocation()
                 }, function (err) {
                     $rootScope.alert = err.data.message;
                 });

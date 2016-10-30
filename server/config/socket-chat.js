@@ -1,6 +1,6 @@
 var express = require('express');
 var _ = require('underscore');
-var chatCtrl = require('../socket/event-chat');
+var chatCtrl = require('../socket/chat');
 var checkAuthToken = require('../services/jwt.ultil');
 module.exports = function (io, app) {
     _.each(io.nsps, function (nsp) {
@@ -48,13 +48,27 @@ module.exports = function (io, app) {
 //when authenticate successful
 function authenSuccess(io, socket) {
 
-    socket.on('signin', function () {
-     
+    // var nickname = socket.user.firstName + socket.user.lastName;
+    // //loads room
+    chatCtrl.init(socket);
+
+    socket.on('update rooms', function () {
+        chatCtrl.loadRooms(socket);
     });
 
-    socket.on('new event', function () {
-        io.emit('load event');
-    })
+    socket.on('create room', function (roomInfo) {
+        roomInfo.roomHost = socket.user._id;
+        // console.log(roomInfo);
+        chatCtrl.createRoom(socket, roomInfo);
+    });
+
+    socket.on('delete room', function (roomId) {
+        chatCtrl.deleteRoom(socket, roomId);
+    });
+
+    socket.on('edit room', function (roomInfo) {
+        chatCtrl.editRoom(socket, roomInfo);
+    });
 
     socket.on('join', function (room) {
         if (socket.room) {
@@ -69,6 +83,10 @@ function authenSuccess(io, socket) {
 
     socket.on('leave', function () {
         chatCtrl.leaveRoom(io, socket);
+    });
+
+    socket.on('ban', function (room, bannedUser) {
+        chatCtrl.ban(io, socket, room, bannedUser);
     });
 
     socket.on('disconnect', function onDisconnect() {

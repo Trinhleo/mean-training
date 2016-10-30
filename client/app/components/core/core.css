@@ -1,6 +1,16 @@
-	.title-lv1 {
-		color : #000066;
+.title-lv1 {
+		color : #337ab7;
 	};
-	.no-padding{
-		padding: 0 !important;
+.no-padding {
+		padding-left: 0 !important;
+		padding-right: 0 !important;
 	};
+
+.avatar-and-button {
+  padding-top: 8px;
+  display: flex;
+}
+
+.avatar-and-button div {
+  margin-left: 15px
+}
