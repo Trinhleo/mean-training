@@ -87,14 +87,14 @@ function updateEvent(id, eventInfo, callback) {
 
 function deleteEvent(id, callback) {
     console.log("hhh" + id);
-    Event.findById(id, function (err, Event) {
+    Event.findById(id, function (err, event) {
         if (err) {
             console.log('1' + err);
             callback(err, null);
-        } else if (null === Event) {
+        } else if (null === event) {
             callback(null, null);
         } else {
-            Event.remove(function (err, result) {
+            event.remove(function (err, result) {
                 if (err) {
                     console.log(err);
                     callback(err, null);

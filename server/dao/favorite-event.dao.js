@@ -1,20 +1,18 @@
 'use strict';
 var mongoose = require('mongoose');
-require('../models/event.model.js');
-var Event = mongoose.model('FavoriteEvent');
+require('../models/favorite-event.model.js');
+var FavEvent = mongoose.model('FavoriteEvent');
 var _ = require('lodash');
 module.exports = {
-    listAllEvents: listAllEvents,
-    listAllEventsByUserId: listAllEventsByUserId,
-    getEventById: getEventById,
-    createEvent: createEvent,
-    updateEvent: updateEvent,
-    deleteEvent: deleteEvent
+    listMyFavEvents: listMyFavEvents,
+    getFavEventByEventId: getFavEventByEventId,
+    createFavEvent: createFavEvent,
+    deleteFavEvent: deleteFavEvent
 }
 
-function listAllEvents(callback) {
+function listMyFavEvents(id, callback) {
 
-    Event.find({ endTime: { $gt: new Date } }).sort('-created').populate('userHost', 'firstName lastName profileImageURL').exec(function (err, events) {
+    FavEvent.find({ userAdd: id }).sort('-created').populate('userHost', 'firstName lastName profileImageURL').exec(function (err, events) {
         if (err) {
             console.log(err);
             callback(err, null);
@@ -28,31 +26,38 @@ function listAllEvents(callback) {
     });
 };
 
-function listAllEventsByUserId(userId, callback) {
-    Event.find({ userHost: userId }).populate('userHost', 'firstName lastName profileImageURL').sort('-created').exec(function (err, Events) {
+function getFavEventByEventId(userId, eventId, callback) {
+    FavEvent.find({
+        userAdd: userId,
+        event: eventId
+    }).sort('-created').exec(function (err, res) {
         if (err) {
             console.log(err);
-            callback(err, null);
+            return callback(err, null);
+        };
+        if (res.length === 0 || res === []) {
+            callback("not found");
         } else {
-            callback(null, Events);
+            callback(null, res);
+            console.log(res);
         }
     })
 };
 
-function getEventById(id, callback) {
-    Event.findById(id).populate('userHost', 'firstName lastName profileImageURL').exec(function (err, result) {
-        if (err) {
-            console.log(err);
-            callback(err, null);
-        } else {
-            callback(null, result);
-        };
-    });
-};
+// function getEventById(id, callback) {
+//     Event.findById(id).populate('userHost', 'firstName lastName profileImageURL').exec(function (err, result) {
+//         if (err) {
+//             console.log(err);
+//             callback(err, null);
+//         } else {
+//             callback(null, result);
+//         };
+//     });
+// };
 
-function createEvent(eventInfo, callback) {
-    console.log(Event);
-    var event = new Event(eventInfo);
+function createFavEvent(eventFavInfo, callback) {
+
+    var event = new FavEvent(eventFavInfo);
     event.save(function (err, result) {
         if (err) {
             console.log(err);
@@ -63,45 +68,51 @@ function createEvent(eventInfo, callback) {
     });
 
 };
-function updateEvent(id, eventInfo, callback) {
-    console.log(eventInfo);
-    Event.findById(id, function (err, result) {
-        if (err || null === result) {
-            console.log(err);
-            callback(err, null);
-        } else {
-            var info = _.assignIn(result, eventInfo)
-            console.log(info);
-            info.save(function (err, result) {
-                if (err) {
-                    console.log(err);
-                    callback(err, null);
-                } else {
-                    callback(null, true);
-                }
-            });
-        }
-    })
 
-};
+// function updateEvent(id, eventInfo, callback) {
+//     console.log(eventInfo);
+//     Event.findById(id, function (err, result) {
+//         if (err || null === result) {
+//             console.log(err);
+//             callback(err, null);
+//         } else {
+//             var info = _.assignIn(result, eventInfo)
+//             console.log(info);
+//             info.save(function (err, result) {
+//                 if (err) {
+//                     console.log(err);
+//                     callback(err, null);
+//                 } else {
+//                     callback(null, true);
+//                 }
+//             });
+//         }
+//     })
 
-function deleteEvent(id, callback) {
-    console.log("hhh" + id);
-    Event.findById(id, function (err, Event) {
-        if (err) {
+// };
+
+function deleteFavEvent(favEvent, callback) {
+
+    FavEvent.find(favEvent, function (err, fav) {
+        if (err || !fav) {
             console.log('1' + err);
-            callback(err, null);
-        } else if (null === Event) {
-            callback(null, null);
+            return callback(err, null);
+        };
+
+        if (fav.length === 0 || fav === []) {
+            callback(false, null);
         } else {
-            Event.remove(function (err, result) {
-                if (err) {
-                    console.log(err);
-                    callback(err, null);
-                } else {
-                    callback(null, true);
-                };
-            });
+            console.log(fav);
+            for (var x in fav) {
+                fav[x].remove(function (err, res) {
+                    if (err) {
+                        console.log(err);
+                        return callback(err, null);
+                    };
+
+                });
+            };
+            callback(null, true);
         }
     })
 };

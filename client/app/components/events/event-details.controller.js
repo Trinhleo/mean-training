@@ -13,8 +13,23 @@
         vm.events = [];
         vm.event = {};
         vm.gotoEdit = gotoEdit;
-        vm.followEvent = followEvent;
+        vm.gotoDelete = gotoDelete;
+        vm.likeEvents = likeEvents;
         vm.isMyEvent = false;
+        vm.isLiked = false;
+
+        checkFav();
+        function checkFav() {
+            EventService.checkFavoriteEvent($stateParams.eventId).then(
+                function (res) {
+                    vm.isLiked = true;
+                },
+                function (err) {
+                    vm.isLiked = false;
+                }
+            );
+        };
+
         EventService.getEvent($stateParams.eventId).then(
             function (res) {
                 var evt = res;
@@ -43,9 +58,41 @@
                 eventId: vm.event._id
             });
         };
-        
-        function followEvent() {
-            
-        }
+
+        function deleteEvent() {
+            EventService.deleteEvent($stateParams.id)
+                .then(
+                function (res) {
+                    $state.go('index.events');
+                },
+                function (err) {
+                    window.alert(err);
+                }
+                )
+        };
+
+        function likeEvents() {
+            if (!vm.isLiked) {
+                EventService.addToFavouriteEvents($stateParams.eventId)
+                    .then(
+                    function (res) {
+                        console.log(res);
+                        checkFav();
+                    },
+                    function (err) {
+                        $state.go('index.events');
+                    });
+            } else {
+                EventService.removeFavouriteEvent($stateParams.eventId)
+                    .then(
+                    function (res) {
+                        checkFav();
+                        console.log(res)
+                    },
+                    function (err) {
+                        $state.go('index.events');
+                    });
+            }
+        };
     };
 })();

@@ -2,11 +2,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var FavoriteEventSchema = new Schema({
-    userHost: {
-        type: Schema.ObjectId,
-        ref: 'User',
-        required: true
-    },
     userAdd: {
         type: Schema.ObjectId,
         ref: 'User',
@@ -16,6 +11,10 @@ var FavoriteEventSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'Event',
         required: true
+    },
+    creationDate: {
+        type: Date,
+        default: Date.now
     }
 });
 

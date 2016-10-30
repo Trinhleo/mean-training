@@ -51,5 +51,16 @@
             });
             return deferred.promise;
         };
+
+        function addFollowUser(hostId, userId) {
+            var defferred = $q.defer();
+            $http.post(apiUrl + '/' + hostId +'follow', userId).then(function (res) {
+                deferred.resolve(res.data);
+            }, function (err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+
+        };
     }
 })();

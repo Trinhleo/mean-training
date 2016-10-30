@@ -5,6 +5,7 @@
     EventService.$inject = ['$http', '$q', 'appConfigs']
     function EventService($http, $q, appConfigs) {
         var apiUrl = appConfigs.baseApiUrl + "events";
+        var apiBase = appConfigs.baseApiUrl;
         return {
             loadEvents: loadEvents,
             loadMyEvents: loadMyEvents,
@@ -13,7 +14,9 @@
             updateEvent: updateEvent,
             deleteEvent: deleteEvent,
             getEventImages: getEventImages,
-            followEvent: followEvent
+            addToFavouriteEvents: addToFavouriteEvents,
+            removeFavouriteEvent: removeFavouriteEvent,
+            checkFavoriteEvent: checkFavoriteEvent
         };
 
         function loadMyEvents() {
@@ -87,11 +90,40 @@
             return deferred.promise;
         };
 
-        function followEvent(id) {
-            var defferred = $q.defer();
-
+        function addToFavouriteEvents(eventId) {
+            var deferred = $q.defer();
+            $http.post(apiUrl + '/myevents/favorite', { event: eventId }).then(function (res) {
+                deferred.resolve(res.data);
+            }, function (err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
 
         };
+
+        function removeFavouriteEvent(eventId) {
+            var deferred = $q.defer();
+            $http.delete(apiUrl + '/myevents/favorite/' + eventId).then(function (res) {
+                deferred.resolve(res.data);
+            }, function (err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+
+        };
+
+        function checkFavoriteEvent(eventId) {
+            var deferred = $q.defer();
+            $http.get(apiUrl + '/myevents/favorite/' + eventId).then(function (res) {
+                deferred.resolve(res.data);
+            }, function (err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        };
+
+
+
 
         // function uploadEventImages(id) {
         //     var deferred = $q.defer();

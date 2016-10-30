@@ -11,6 +11,10 @@ var FollowEventSchema = new Schema({
         type: Schema.ObjectId,
         ref: 'User',
         required: true
+    },
+    creationDate: {
+        type: Date,
+        default: Date.now
     }
 });
 

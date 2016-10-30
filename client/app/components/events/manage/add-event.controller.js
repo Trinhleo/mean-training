@@ -43,6 +43,16 @@
         vm.uploadEventImage = uploadEventImage;
         vm.cancelUpload = cancelUpload;
 
+        this.isOpen = false;
+
+        this.openCalendar = function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            vm.isOpen = true;
+        };
+
+
         getEventsLocation();
 
         function getEventsLocation() {
