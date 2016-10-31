@@ -1,18 +1,17 @@
 'use strict';
 var mongoose = require('mongoose');
-require('../models/favorite-event.model.js');
-var FavEvent = mongoose.model('FavoriteEvent');
+require('../models/follow-event.model.js');
+var Follow = mongoose.model('FollowUser');
 var _ = require('lodash');
 module.exports = {
-    listMyFavEvents: listMyFavEvents,
-    getFavEventByEventId: getFavEventByEventId,
-    createFavEvent: createFavEvent,
-    deleteFavEvent: deleteFavEvent
+    listMyFollowerUser: listMyFollowerUser,
+    getFollowerByUserId: getFollowerByUserId,
+    followUser: followUser,
+    unFollowUser: unFollowUser
 }
 
-function listMyFavEvents(id, callback) {
-
-    FavEvent.find({ userAdd: id }).sort('-created').populate('userHost', 'firstName lastName profileImageURL').exec(function (err, events) {
+function listMyFollowerUser(id, callback) {
+    Follow.find({ userHost: id }).sort('-created').populate('userFollow', 'firstName lastName profileImageURL').exec(function (err, events) {
         if (err) {
             console.log(err);
             callback(err, null);
@@ -26,8 +25,9 @@ function listMyFavEvents(id, callback) {
     });
 };
 
-function getFavEventByEventId(eventId, callback) {
-    FavEvent.find({
+function getFollowerByUserId(userId, eventId, callback) {
+    Follow.find({
+        userAdd: userId,
         event: eventId
     }).sort('-created').exec(function (err, res) {
         if (err) {
@@ -54,10 +54,10 @@ function getFavEventByEventId(eventId, callback) {
 //     });
 // };
 
-function createFavEvent(eventFavInfo, callback) {
+function followUser(flInfo, callback) {
 
-    var event = new FavEvent(eventFavInfo);
-    event.save(function (err, result) {
+    var fl = new Follow(flInfo);
+    fl.save(function (err, result) {
         if (err) {
             console.log(err);
             callback(err, null);
@@ -90,20 +90,20 @@ function createFavEvent(eventFavInfo, callback) {
 
 // };
 
-function deleteFavEvent(favEvent, callback) {
+function unFollowUser(uflInfo, callback) {
 
-    FavEvent.find(favEvent, function (err, fav) {
+    Follow.find(uflInfo, function (err, fav) {
         if (err || !fav) {
             console.log('1' + err);
             return callback(err, null);
         };
 
-        if (fav.length === 0 || fav === []) {
+        if (fav.length === 0 || fl === []) {
             callback(false, null);
         } else {
             console.log(fav);
-            for (var x in fav) {
-                fav[x].remove(function (err, res) {
+            for (var x in fl) {
+                fl[x].remove(function (err, res) {
                     if (err) {
                         console.log(err);
                         return callback(err, null);

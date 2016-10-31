@@ -1,7 +1,7 @@
 'use strict';
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var FollowEventSchema = new Schema({
+var FollowUserSchema = new Schema({
     userHost: {
         type: Schema.ObjectId,
         ref: 'User',
@@ -20,4 +20,4 @@ var FollowEventSchema = new Schema({
 
 // Indexes this schema in geoJSON format (critical for running proximity searches)
 
-module.exports = mongoose.model('FollowEvent', FollowEventSchema);
+module.exports = mongoose.model('FollowUser', FollowUserSchema);

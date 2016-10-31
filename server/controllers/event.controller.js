@@ -1,13 +1,4 @@
 var eventDao = require('./../dao/event.dao');
-var multer = require('multer');
-var path = require('path');
-var fs = require('fs-extra');
-const fileField = 'myfile';
-const galleryPath = './uploads/events/';
-const hostName = 'http://localhost:';
-const port = 3000;
-const galleryPathUrl = '/events/';
-const maxImgFileSize = 1024 * 1024;
 module.exports = {
     getAllEvents: getAllEvents,
     getAllEventsByUserId: getAllEventsByUserId,
